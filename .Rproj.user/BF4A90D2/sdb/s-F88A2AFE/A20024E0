@@ -1,0 +1,29 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1500627549110.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "A20024E0",
+    "lastKnownWriteTime" : 33777473953071216,
+    "last_content_update" : 1500627549110,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "cacheKey" : "D28C9F22",
+        "caption" : "EMDiagS",
+        "contentUrl" : "grid_resource/gridviewer.html?env=&obj=EMDiagS&cache_key=D28C9F22",
+        "displayedObservations" : 1673,
+        "environment" : "",
+        "object" : "EMDiagS",
+        "preview" : 0,
+        "totalObservations" : 1673,
+        "variables" : 11
+    },
+    "relative_order" : 7,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_dataframe"
+}
