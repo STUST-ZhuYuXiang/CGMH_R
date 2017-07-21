@@ -130,8 +130,8 @@ cor(mtcars$mpg,mtcars$hp)
 - 大多可用R的內建函數完成計算
 - 但是在探索式分析時，常常需要**資料分組**
     - 觀察**男性**和**女性**的血壓差異
-    - **A隊**與**B隊**的三分球命中率差異
-    - **中鋒**和**後衛**的助攻次數
+    - **Case**與**Control**的共病比例差異
+    - 接受**治療A**和**治療B**的成效
     - ...等
 - 若只用基本的內建函數計算，相當耗時
     - `data.table`和`dplyr` packages可以快速完成**分組分析**!
@@ -176,10 +176,10 @@ install.packages("dplyr") ##安裝
 library(dplyr) ##載入
 ```
 
-以上述NBA資料為例，首先先讀入資料
+以住院疾病統計檔為例，首先先讀入資料
 ```{r}
-library(SportsAnalytics)
-NBA1516<-fetch_NBAPlayerStatistics("15-16")
+library(readr)
+DiagSumS <- read_csv("DiagSumS.csv") #自行載入
 ```
 
 欄位(Column)子集 select() 
@@ -204,35 +204,34 @@ NBA1516<-fetch_NBAPlayerStatistics("15-16")
 
 欄位(Column)子集 select() 
 ====================================
-篩選欄位名稱為`Name`、開頭是`Threes`或是開頭是`FieldGoals`的欄位
+篩選欄位名稱為`年齡`、開頭是`診斷類別`或是結尾是`日期`的欄位
 ```{r select1,eval=F}
-##等於NBA1516[,c("Name","ThreesMade","ThreesAttempted",
-##   "FieldGoalsMade","FieldGoalsAttempted")]
 select1<-
-    select(NBA1516,Name,starts_with("Threes"),
-            starts_with("FieldGoals"))
+    select(DiagSumS,年齡,starts_with("診斷類別"),
+            ends_with("日期"))
 head(select1)
 ```
 ```{r select1.1,echo=F}
-select1<-select(NBA1516,Name,starts_with("Threes"),
-                starts_with("FieldGoals"))
+select1<-
+    select(DiagSumS,年齡,starts_with("診斷類別"),
+            ends_with("日期"))
 knitr::kable(head(select1,1)) 
 ```
 
 欄位(Column)子集 select() 
 ====================================
 
-若想篩選欄位`Name`到欄位`FieldGoalsMade`間的所有欄位，但不想要`GamesPlayed`欄位
+若想篩選欄位`性別`到欄位`來源別`間的所有欄位，但不想要`妊娠期`欄位
 - 用`:`串連欄位名稱
 - 用`-`去除不要的欄位
 ```{r selec3,eval=F}
-##等同於NBA1516[,c(2:4,612)]
 select3<-
-    select(NBA1516,Name:FieldGoalsMade,-GamesPlayed)
+    select(DiagSumS,性別:來源別,-妊娠期)
 head(select3,3)
 ```
 ```{r selec3.1,echo=F}
-select3<-select(NBA1516,Name:FieldGoalsMade,-GamesPlayed)
+select3<-
+    select(DiagSumS,性別:來源別,-妊娠期)
 knitr::kable(head(select3,3))
 ```
 
@@ -240,26 +239,23 @@ knitr::kable(head(select3,3))
 ====================================
 - 是針對列 (Row)做子集
 - `filter(資料名稱,篩選條件1,篩選條件2)`篩選條件們是用**且**的邏輯串連
-- **出場分鐘數超過2850分鐘**的球員資料，可輸入下列指令
+- **來源別為E**的診斷資料，可輸入下列指令
 ```{r filter1,eval=F}
-##等於NBA1516[NBA1516$TotalMinutesPlayed>2850,]
-filter(NBA1516,TotalMinutesPlayed>2850)
+filter(DiagSumS,來源別=="E")
 ```
 ```{r filter1.1,echo=F}
-##等同於 NBA1516[NBA1516$TotalMinutesPlayed>2850,]
-filter1<-filter(NBA1516,TotalMinutesPlayed>2850)
+filter1<-filter(DiagSumS,來源別=="E")
 knitr::kable(filter1)
 ```
 
 觀察值(Row)子集 filter()
 ====================================
-也可選擇隊伍名稱為"BOS"或"SAN"的球員資料
+也可選擇住院天數大於50的資料
 ```{r filter2,eval=F}
-##等於NBA1516[NBA1516$Team %in% c("BOS","SAN"),]
-filter(NBA1516,Team %in% c("BOS","SAN"))
+filter(DiagSumS,住院天數 > 50)
 ```
 ```{r filter2.1,echo=F}
-knitr::kable(head(filter(NBA1516,Team %in% c("BOS","SAN"))))
+knitr::kable(head(filter(DiagSumS,住院天數 > 50)))
 ```
 
 
@@ -267,12 +263,11 @@ knitr::kable(head(filter(NBA1516,Team %in% c("BOS","SAN"))))
 ====================================
 也可使用 `&` 和 `|`等符號串連邏輯
 ```{r filter4,eval=F}
-filter(NBA1516,
-       FieldGoalsMade/FieldGoalsAttempted>0.7
-           &GamesPlayed>30)
+filter(DiagSumS,住院天數 > 50
+           & 來源別=="E")
 ```
 ```{r filter4.1,echo=F}
-knitr::kable(filter(NBA1516,FieldGoalsMade/FieldGoalsAttempted>0.7 & GamesPlayed>30))
+knitr::kable(filter(DiagSumS,住院天數 > 50& 來源別=="E"))
 ```
 
 dplyr 子集練習
@@ -280,48 +275,39 @@ dplyr 子集練習
 type:alert
 incremental:true
 
-- 讀入NBA資料
-```{r,eval=F}
-library(SportsAnalytics)
-library(dplyr)
-NBA1516<-fetch_NBAPlayerStatistics("15-16")
+- 讀入住院疾病統計檔資料
+```{r message=F}
+library(readr)
+DiagSumS <- read_csv("DiagSumS.csv") #自行載入
 ```
-- 試著用dplyr語法篩選出所有**助攻數(Assists)超過100**且**抄截數大於20**的球員資料
-- 只留下Name Team Position GamesPlayed TotalMinutesPlayed Assists Steals 七個欄位
+- 試著用dplyr語法篩選出所有**男性**且**居住地為高雄市**的資料
+- 只留下性別、診斷類別1、診斷類別名稱1、住院天數、住院日期 五個欄位
 
 
 
-增加新欄位 mutate()
-====================================
-- 新增新欄位`FGRate`，欄位值為`FieldGoalsMade/FieldGoalsAttempted`
-```{r mutate1}
-mutate1<-
-    mutate(NBA1516,
-           FGRate=FieldGoalsMade/FieldGoalsAttempted)
-mutate1$FGRate[1:5]
-```
 
 計算統計值 summarise() 
 ====================================
-- **球員個數**、**不重複的隊伍數**以及**不重複的守備位置數**等
+- **資料比數**、**不重複的歸戶代號數**以及**不重複的來源別數**等
 - n(), n_distinct()
 ```{r summarise1}
-summarise(NBA1516,
-          nPlayer=n(),
-          nTeam=n_distinct(Team),
-          nPos=n_distinct(Position))
+summarise(DiagSumS,
+          nRecord=n(),
+          nID=n_distinct(歸戶代號),
+          nSource=n_distinct(來源別))
 ```
 
 計算統計值 summarise() 
 ====================================
 - 通常會與其他功能合併使用
-- 計算**出場分鐘數大於2500分鐘**的**球員個數**、**平均投進的兩分球數**以及**平均投出的兩分球數**
+- 計算**住院超過50天的**的**資料比數**、**不重複的歸戶代號數**、**平均年齡**以及**性別為男性的資料筆數**
 ```{r summarise2}
-filter1<-filter(NBA1516,TotalMinutesPlayed>2500)
+filter1<-filter(DiagSumS,住院天數 > 50)
 summarise(filter1,
-          nPlayer=n(),
-          meanFGMade=mean(FieldGoalsMade),
-          meanFGAtt=mean(FieldGoalsAttempted))
+          nRecord=n(),
+          nID=n_distinct(歸戶代號),
+          meanAge=mean(年齡),
+          nM=sum(性別=="M"))
 ```
 
 dplyr filter()+summarise() 練習
@@ -329,57 +315,70 @@ dplyr filter()+summarise() 練習
 type:alert
 incremental:true
 
-- 讀入NBA資料
-```{r eval=F}
-library(SportsAnalytics)
-library(dplyr)
-NBA1516<-fetch_NBAPlayerStatistics("15-16")
+- 讀入住院疾病統計檔資料
+```{r message=F}
+library(readr)
+DiagSumS <- read_csv("DiagSumS.csv") #自行載入
 ```
-- 試著用dplyr語法篩選出所有**助攻數(Assists)超過100**且**抄截數大於20**的球員資料
-- 計算這些球員的**平均出場數GamesPlayed**，**平均出場分鐘數TotalMinutesPlayed**
+- 試著用dplyr語法篩選出所有**住院超過30天的**的資料
+- 計算這些資料的**來源別為E的數目**，**診斷類別名稱1中包含腫瘤文字的資料比數**
+- 提示: grepl
 
 pipe %>%
 ====================================
 - 直接用**pipe**符號`%>%`將指令串連，減少暫存物件（filter1）的生成
 ```{r summarise3}
-filter(NBA1516,TotalMinutesPlayed>2500) %>%
-    summarise(nPlayer=n(),
-        meanFGMade=mean(FieldGoalsMade),
-        meanFGAtt=mean(FieldGoalsAttempted))
+filter(DiagSumS,住院天數 > 50) %>%
+    summarise(nRecord=n(),
+          nID=n_distinct(歸戶代號),
+          meanAge=mean(年齡),
+          nM=sum(性別=="M"))
+```
+
+修改欄位名稱 rename()
+====================================
+`新名稱=舊名稱`
+```{r rename1}
+DiagSumE <- rename(DiagSumS, Hosp = 院區,Gender=性別)
+DiagSumE[1:5,1:2]
 ```
 
 分組 group_by()
 ====================================
 - 設定分組依據
 - 與`summarise()`函式合併使用
-- 計算各**隊**（以Team作為分組依據）的**球員數**、**平均投進的兩分球數**以及**平均投出的兩分球數**
+- 計算各**性別**（以性別作為分組依據）的**資料比數**、**平均年齡**以及**平均住院天數**
 ```{r group1,eval=F}
-group_by(NBA1516,Team)%>%
-    summarise(nPlayer=n(),
-        meanFGMade=mean(FieldGoalsMade),
-        meanFGAtt=mean(FieldGoalsAttempted))
+group_by(DiagSumS,.dots=性別)%>%
+    summarise(nRecord=n(),
+        meanAge=mean(年齡),
+        meanHos=mean(住院天數))
 ```
 ```{r group1.1,echo=F}
-group1<-group_by(NBA1516,Team)%>%
-  summarise(nPlayer=n(),meanFGMade=mean(FieldGoalsMade),
-                meanFGAtt=mean(FieldGoalsAttempted))
+group1<-group_by(DiagSumS,.dots=性別)%>%
+    summarise(nRecord=n(),
+        meanAge=mean(年齡),
+        meanHos=mean(住院天數))
 knitr::kable(head(group1,4))
 ```
 
 分組 group_by()
 ====================================
 - 可設定**多個**分組依據
-- 計算各**隊**各**守備位置**（以Team和Position作為分組依據）的**球員數**、**平均投進的兩分球數**以及**平均投出的兩分球數**
+- 計算各**院區**各**性別**的**資料比數**、**平均年齡**以及**平均住院天數**
 ```{r group2,eval=F}
-group_by(NBA1516,Team,Position)%>%
-  summarise(nPlayer=n(),
-        meanFGMade=mean(FieldGoalsMade),
-        meanFGAtt=mean(FieldGoalsAttempted))
+DiagSumE <- rename(DiagSumS, Hosp = 院區,Gender=性別)
+group_by(DiagSumE,Hosp,Gender) %>%
+    summarise(nRecord=n(),
+        meanAge=mean(年齡),
+        meanHos=mean(住院天數))
 ```
 ```{r group2.1,echo=F}
-group2<-group_by(NBA1516,Team,Position)%>%
-  summarise(nPlayer=n(),meanFGMade=mean(FieldGoalsMade),
-                meanFGAtt=mean(FieldGoalsAttempted))
+DiagSumE <- rename(DiagSumS, Hosp = 院區,Gender=性別)
+group2<-group_by(DiagSumE,Hosp,Gender) %>%
+    summarise(nRecord=n(),
+        meanAge=mean(年齡),
+        meanHos=mean(住院天數))
 knitr::kable(head(group2,3))
 ```
 
@@ -387,10 +386,10 @@ knitr::kable(head(group2,3))
 ====================================
 排序功能，預設為**遞增排序**
 ```{r arrange1,eval=F}
-arrange(NBA1516,TotalMinutesPlayed)
+arrange(DiagSumS,住院天數) %>% select(院區,住院天數)
 ```
 ```{r arrange1.1,echo=F}
-arrange1<-arrange(NBA1516,TotalMinutesPlayed)
+arrange1<-arrange(DiagSumS,住院天數) %>% select(院區,住院天數)
 knitr::kable(head(arrange1)) 
 ```
 
@@ -398,57 +397,63 @@ knitr::kable(head(arrange1))
 ====================================
 使用`desc()`將要**遞減排序**的變數包起來，就可以遞減排序
 ```{r arrange2,eval=F}
-arrange(NBA1516,
-        desc(TotalMinutesPlayed),
-        desc(GamesPlayed))
+arrange(DiagSumS,
+        desc(住院天數),
+        desc(年齡)) %>% 
+  select(院區,住院天數)
 ```
 ```{r arrange2.1,echo=F}
-arrange2<-arrange(NBA1516,desc(TotalMinutesPlayed),desc(GamesPlayed))
+arrange2<-arrange(DiagSumS,
+        desc(住院天數),
+        desc(年齡))%>% select(院區,住院天數)
 knitr::kable(head(arrange2,3))
 ```
+
+
+
+
+
 
 dplyr綜合範例
 ====================================
 - 結合`group_by()`、`summarise()`、`arrange()`，可完成一連串的資料分析
-- 計算各**隊**各**守備**位置（以Team和Position作為分組依據）的球員數、平均投進的兩分球數以及平均投出的兩分球數，並依平均投進的兩分球數**由大到小排序**
+- 計算各**院區**各**性別**的資料數、平均住院天數以及平均年齡，並依平均住院天數**由大到小排序**
 ```{r arrange3,eval=F}
-group_by(NBA1516,Team,Position) %>%
-  summarise(nPlayer=n(),
-    meanFGMade=mean(FieldGoalsMade),
-    meanFGAtt=mean(FieldGoalsAttempted)) %>%
-  arrange(desc(meanFGMade))
+DiagSumE <- rename(DiagSumS, Hosp = 院區,Gender=性別)
+group_by(DiagSumE,Hosp,Gender) %>%
+    summarise(nRecord=n(),
+        meanAge=mean(年齡),
+        meanHos=mean(住院天數)) %>%
+  arrange(desc(meanHos))
 ```
 ```{r arrange3.1,echo=F}
-arrange3<-group_by(NBA1516,Team,Position)%>%
-  summarise(nPlayer=n(),meanFGMade=mean(FieldGoalsMade),
-                meanFGAtt=mean(FieldGoalsAttempted)) %>%
-  arrange(desc(meanFGMade))
+DiagSumE <- rename(DiagSumS, Hosp = 院區,Gender=性別)
+arrange3<-group_by(DiagSumE,Hosp,Gender) %>%
+    summarise(nRecord=n(),
+        meanAge=mean(年齡),
+        meanHos=mean(住院天數)) %>%
+  arrange(desc(meanHos))
 knitr::kable(head(arrange3,3))
 ```
 
-修改欄位名稱 rename()
-====================================
-`新名稱=舊名稱`
-```{r rename1}
-rename1<-rename(NBA1516,Po=Position)
-rename1[1:5,1:5]
-```
+
 
 dplyr 綜合練習
 ====================================
 type:alert
 incremental:true
 
-- 讀入NBA資料
-```{r eval=F}
-library(SportsAnalytics)
-library(dplyr)
-NBA1516<-fetch_NBAPlayerStatistics("15-16")
+- 讀入住院疾病統計檔資料
+```{r message=F}
+library(readr)
+DiagSumS <- read_csv("DiagSumS.csv") #自行載入
 ```
-- 試著用dplyr語法篩選出所有**助攻數(Assists)超過100**且**抄截數大於20**的球員資料
-- 依**守備位置**Position分組，計算球員的平均**出場數**GamesPlayed，平均**出場分鐘數**TotalMinutesPlayed
-- 依平均出場數GamesPlayed**由大到小**排序
+
+- 試著用dplyr語法篩選出所有**年齡超過60**的**女性**資料
+- 依**院區**，計算**總資料比數**、**來源別為E的資料個數**，**診斷類別名稱1中有腫瘤字樣的資料比數**
+- 依總資料比數**由大到小**排序
 - 用pipe **%>%**
+
 
 dplyr 參考文件與資源
 ====================================
