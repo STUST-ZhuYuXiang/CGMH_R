@@ -1,6 +1,6 @@
 探索式資料分析
 ========================================================
-author: 曾意儒 Yi-Ju Tseng
+author: 長庚資管 曾意儒 Yi-Ju Tseng
 date: 2017/07/31
 autosize: true
 font-family: 'Microsoft JhengHei'
@@ -71,10 +71,21 @@ type:sub-section
     
 量化的分析方式: 單變量-集中趨勢
 ====================================
-```{r}
-mean(iris$Sepal.Length)
-median(iris$Sepal.Length)
-table(iris$Species)
+```{r message=F}
+# 讀入資料，請將檔案放在專案路徑下
+library(readr)
+EMDiagS <- read_csv("EMDiagS.csv")
+# 平均
+mean(EMDiagS$疾病序號)
+```
+
+量化的分析方式: 單變量-集中趨勢
+====================================
+```{r message=F}
+# 中位數
+median(EMDiagS$疾病序號)
+# 個數計算
+table(EMDiagS$掛號科別)
 ```
     
 量化的分析方式: 單變量
@@ -92,17 +103,19 @@ table(iris$Species)
 量化的分析方式: 單變量-分散程度
 ====================================
 ```{r}
-min(iris$Sepal.Length)
-max(iris$Sepal.Length)
-range(iris$Sepal.Length)
+# 讀入疾病統計檔資料，請將檔案放在專案路徑下
+DiagSumS <- read_csv("DiagSumS.csv")
+min(DiagSumS$住院天數)
+max(DiagSumS$住院天數)
+range(DiagSumS$住院天數)
 ```
 
 量化的分析方式: 單變量
 ====================================
-```{r}
-quantile(iris$Sepal.Length)
-var(iris$Sepal.Length)
-sd(iris$Sepal.Length)
+```{r message=F}
+quantile(DiagSumS$住院天數)
+var(DiagSumS$住院天數)
+sd(DiagSumS$住院天數)
 ```
 
 
@@ -113,16 +126,32 @@ sd(iris$Sepal.Length)
 
 量化的分析方式: 雙變量-列聯表
 ====================================
-輪子的數目與自手排的關係
+院區與14天內再次住院的關係
 ```{r}
-table(mtcars$cyl,mtcars$am)
+table(DiagSumS$院區,
+      DiagSumS$`14天內再次住院註記`)
+```
+
+量化的分析方式: 卡方
+====================================
+院區與14天內再次住院的關係
+```{r}
+chisq.test(table(DiagSumS$院區,
+      DiagSumS$`14天內再次住院註記`))
 ```
 
 量化的分析方式: 雙變量-相關性
 ====================================
 油耗跟馬力的關聯性（相關係數）
 ```{r}
-cor(mtcars$mpg,mtcars$hp)
+cor(DiagSumS$年齡,
+    DiagSumS$住院天數)
+```
+
+量化的分析方式: 雙變量-平均相比
+====================================
+```{r}
+t.test(住院天數~`14天內再次住院註記`,DiagSumS)
 ```
 
 量化的分析方式 w/ R
@@ -163,7 +192,7 @@ type:sub-section
     - `group_by()`: 分組依據
     - `arrange()`: 觀察值排序
     - `rename()`: 欄位重新命名
-    - `%>%`: the “pipe” operator 連結上數函式，將所有函式計算串在一起執行
+    - `%>%`: the “pipe” operator 連結上述函式，將所有函式計算串在一起執行
 
 dplyr
 ====================================
@@ -179,7 +208,8 @@ library(dplyr) ##載入
 以住院疾病統計檔為例，首先先讀入資料
 ```{r}
 library(readr)
-DiagSumS <- read_csv("DiagSumS.csv") #自行載入
+# 讀入疾病統計檔資料，請將檔案放在專案路徑下
+DiagSumS <- read_csv("DiagSumS.csv") 
 ```
 
 欄位(Column)子集 select() 
@@ -245,7 +275,7 @@ filter(DiagSumS,來源別=="E")
 ```
 ```{r filter1.1,echo=F}
 filter1<-filter(DiagSumS,來源別=="E")
-knitr::kable(filter1)
+knitr::kable(filter1 %>% select(院區,來源別,ends_with("日期")) %>% head())
 ```
 
 觀察值(Row)子集 filter()
@@ -255,7 +285,7 @@ knitr::kable(filter1)
 filter(DiagSumS,住院天數 > 50)
 ```
 ```{r filter2.1,echo=F}
-knitr::kable(head(filter(DiagSumS,住院天數 > 50)))
+knitr::kable(filter(DiagSumS,住院天數 > 50)%>% select(院區,來源別,住院天數,ends_with("日期")) %>% head())
 ```
 
 
@@ -267,7 +297,7 @@ filter(DiagSumS,住院天數 > 50
            & 來源別=="E")
 ```
 ```{r filter4.1,echo=F}
-knitr::kable(filter(DiagSumS,住院天數 > 50& 來源別=="E"))
+knitr::kable(filter(DiagSumS,住院天數 > 50& 來源別=="E")%>% select(院區,來源別,住院天數,ends_with("日期")) %>% head())
 ```
 
 dplyr 子集練習
@@ -277,18 +307,19 @@ incremental:true
 
 - 讀入住院疾病統計檔資料
 ```{r message=F}
+# 讀入疾病統計檔資料，請將檔案放在專案路徑下
 library(readr)
-DiagSumS <- read_csv("DiagSumS.csv") #自行載入
+DiagSumS <- read_csv("DiagSumS.csv") 
 ```
 - 試著用dplyr語法篩選出所有**男性**且**居住地為高雄市**的資料
-- 只留下性別、診斷類別1、診斷類別名稱1、住院天數、住院日期 五個欄位
+- 只留下性別、起始字串為“診斷類別”的所有欄位、住院天數、住院日期 五個欄位
 
 
 
 
 計算統計值 summarise() 
 ====================================
-- **資料比數**、**不重複的歸戶代號數**以及**不重複的來源別數**等
+- **資料筆數**、**不重複的歸戶代號數**以及**不重複的來源別數**等
 - n(), n_distinct()
 ```{r summarise1}
 summarise(DiagSumS,
@@ -300,7 +331,7 @@ summarise(DiagSumS,
 計算統計值 summarise() 
 ====================================
 - 通常會與其他功能合併使用
-- 計算**住院超過50天的**的**資料比數**、**不重複的歸戶代號數**、**平均年齡**以及**性別為男性的資料筆數**
+- 計算**住院超過50天的**的**資料筆數**、**不重複的歸戶代號數**、**平均年齡**以及**性別為男性的資料筆數**
 ```{r summarise2}
 filter1<-filter(DiagSumS,住院天數 > 50)
 summarise(filter1,
@@ -317,11 +348,12 @@ incremental:true
 
 - 讀入住院疾病統計檔資料
 ```{r message=F}
+# 讀入疾病統計檔資料，請將檔案放在專案路徑下
 library(readr)
-DiagSumS <- read_csv("DiagSumS.csv") #自行載入
+DiagSumS <- read_csv("DiagSumS.csv") 
 ```
 - 試著用dplyr語法篩選出所有**住院超過30天的**的資料
-- 計算這些資料的**來源別為E的數目**，**診斷類別名稱1中包含腫瘤文字的資料比數**
+- 計算這些資料的**來源別為E的數目**，**診斷類別名稱1中包含“腫瘤”文字的資料比數**
 - 提示: grepl
 
 pipe %>%
@@ -349,13 +381,31 @@ DiagSumE[1:5,1:2]
 - 與`summarise()`函式合併使用
 - 計算各**性別**（以性別作為分組依據）的**資料比數**、**平均年齡**以及**平均住院天數**
 ```{r group1,eval=F}
-group_by(DiagSumS,.dots=性別)%>%
+DiagSumE <- rename(DiagSumS, Hosp = 院區,Gender=性別)
+group_by(DiagSumE,Gender)%>%
     summarise(nRecord=n(),
         meanAge=mean(年齡),
         meanHos=mean(住院天數))
 ```
 ```{r group1.1,echo=F}
-group1<-group_by(DiagSumS,.dots=性別)%>%
+group1<-group_by(DiagSumE,Gender)%>%
+    summarise(nRecord=n(),
+        meanAge=mean(年齡),
+        meanHos=mean(住院天數))
+knitr::kable(head(group1,4))
+```
+
+分組 group_by()
+====================================
+```{r group1_1,eval=F}
+DiagSumE <- rename(DiagSumS, Hosp = 院區,Gender=性別)
+group_by(DiagSumE,Gender)%>%
+    summarise(nRecord=n(),
+        meanAge=mean(年齡),
+        meanHos=mean(住院天數))
+```
+```{r group1_1.1,echo=F}
+group1<-group_by(DiagSumE,Gender)%>%
     summarise(nRecord=n(),
         meanAge=mean(年齡),
         meanHos=mean(住院天數))
@@ -382,14 +432,35 @@ group2<-group_by(DiagSumE,Hosp,Gender) %>%
 knitr::kable(head(group2,3))
 ```
 
+
+分組 group_by()
+====================================
+```{r group2_1,eval=F}
+DiagSumE <- rename(DiagSumS, Hosp = 院區,Gender=性別)
+group_by(DiagSumE,Hosp,Gender) %>%
+    summarise(nRecord=n(),
+        meanAge=mean(年齡),
+        meanHos=mean(住院天數))
+```
+```{r group2_1.1,echo=F}
+DiagSumE <- rename(DiagSumS, Hosp = 院區,Gender=性別)
+group2<-group_by(DiagSumE,Hosp,Gender) %>%
+    summarise(nRecord=n(),
+        meanAge=mean(年齡),
+        meanHos=mean(住院天數))
+knitr::kable(head(group2,3))
+```
+
 排序 arrange()
 ====================================
 排序功能，預設為**遞增排序**
 ```{r arrange1,eval=F}
-arrange(DiagSumS,住院天數) %>% select(院區,住院天數)
+arrange(DiagSumS,住院天數) %>% 
+  select(院區,住院天數)
 ```
 ```{r arrange1.1,echo=F}
-arrange1<-arrange(DiagSumS,住院天數) %>% select(院區,住院天數)
+arrange1<-arrange(DiagSumS,住院天數) %>% 
+  select(院區,住院天數)
 knitr::kable(head(arrange1)) 
 ```
 
@@ -400,23 +471,20 @@ knitr::kable(head(arrange1))
 arrange(DiagSumS,
         desc(住院天數),
         desc(年齡)) %>% 
-  select(院區,住院天數)
+  select(院區,住院天數,年齡)
 ```
 ```{r arrange2.1,echo=F}
 arrange2<-arrange(DiagSumS,
         desc(住院天數),
-        desc(年齡))%>% select(院區,住院天數)
-knitr::kable(head(arrange2,3))
+        desc(年齡))%>% select(院區,住院天數,年齡)
+knitr::kable(head(arrange2,6))
 ```
-
-
-
 
 
 
 dplyr綜合範例
 ====================================
-- 結合`group_by()`、`summarise()`、`arrange()`，可完成一連串的資料分析
+- 結合`group_by()`、`summarise()`、`arrange()`，完成一連串的資料分析
 - 計算各**院區**各**性別**的資料數、平均住院天數以及平均年齡，並依平均住院天數**由大到小排序**
 ```{r arrange3,eval=F}
 DiagSumE <- rename(DiagSumS, Hosp = 院區,Gender=性別)
@@ -437,6 +505,25 @@ knitr::kable(head(arrange3,3))
 ```
 
 
+dplyr綜合範例
+====================================
+```{r arrange3_1,eval=F}
+DiagSumE <- rename(DiagSumS, Hosp = 院區,Gender=性別)
+group_by(DiagSumE,Hosp,Gender) %>%
+    summarise(nRecord=n(),
+        meanAge=mean(年齡),
+        meanHos=mean(住院天數)) %>%
+  arrange(desc(meanHos))
+```
+```{r arrange3_1.1,echo=F}
+DiagSumE <- rename(DiagSumS, Hosp = 院區,Gender=性別)
+arrange3<-group_by(DiagSumE,Hosp,Gender) %>%
+    summarise(nRecord=n(),
+        meanAge=mean(年齡),
+        meanHos=mean(住院天數)) %>%
+  arrange(desc(meanHos))
+knitr::kable(head(arrange3))
+```
 
 dplyr 綜合練習
 ====================================
@@ -446,7 +533,8 @@ incremental:true
 - 讀入住院疾病統計檔資料
 ```{r message=F}
 library(readr)
-DiagSumS <- read_csv("DiagSumS.csv") #自行載入
+# 讀入疾病統計檔資料，請將檔案放在專案路徑下
+DiagSumS <- read_csv("DiagSumS.csv")
 ```
 
 - 試著用dplyr語法篩選出所有**年齡超過60**的**女性**資料
@@ -460,56 +548,136 @@ dplyr 參考文件與資源
 - [Introduction to dplyr](https://cran.rstudio.com/web/packages/dplyr/vignettes/introduction.html)
 - DataCamp互動式教學課程 [Data Manipulation in R with dplyr](https://www.datacamp.com/courses/dplyr-data-manipulation-r-tutorial)
 
+其他常用資料處理方法
+====================================
+資料分組 (數值型態)
+```{r}
+summary(DiagSumS$年齡)
+DiagSumS$AgeGroup<-
+  cut(DiagSumS$年齡,
+      breaks = c(0,50,65,100),
+      labels = c("<=50","50-65",">65"))
+```
+
+其他常用資料處理方法
+====================================
+資料分組 (數值型態)
+```{r}
+table(DiagSumS$AgeGroup)
+```
+
+其他常用資料處理方法
+====================================
+資料分組 (類別型態)
+```{r}
+table(DiagSumS$居住地)
+```
+
+其他常用資料處理方法
+====================================
+資料分組 (類別型態)
+```{r}
+DiagSumS$ResGroup<-""
+DiagSumS$ResGroup[
+  grepl("台北|基隆|苗栗|桃園|新北市|新竹",
+        DiagSumS$居住地)] <- "北"
+DiagSumS$ResGroup[
+  grepl("台中|雲林|彰化",
+        DiagSumS$居住地)] <- "中"
+DiagSumS$ResGroup[
+  grepl("高雄|嘉義|屏東|台南",
+        DiagSumS$居住地)] <- "南"
+DiagSumS$ResGroup[
+  grepl("臺東|宜蘭",DiagSumS$居住地)] <- "東"
+table(DiagSumS$ResGroup)
+```
+
+其他常用資料處理方法
+====================================
+資料分組 (類別型態)
+```{r}
+table(DiagSumS$ResGroup)
+```
+
+其他常用資料處理方法
+====================================
+
+診斷碼處理，使用[icd套件](https://cran.r-project.org/web/packages/icd/vignettes/introduction.html)
+```{r}
+#install.packages("icd")
+library(icd)
+head(DiagSumS$診斷類別1)
+DiagSumS$Diag1Point<-
+  icd_short_to_decimal(DiagSumS$診斷類別1)
+head(DiagSumS$Diag1Point)
+```
+
+其他常用資料處理方法
+====================================
+
+診斷碼處理，使用[icd套件](https://cran.r-project.org/web/packages/icd/vignettes/introduction.html)
+```{r}
+AHRQ<-
+  icd10_comorbid_ahrq(
+    DiagSumS %>% filter(住院日期>20160101) %>% 
+      rename(visit_name=住院號,icd_name=診斷類別1))
+head(AHRQ)
+```
 
 長表與寬表
 ====================================
 type:sub-section
 
 - 在資料處理的過程中，常因各種需求，需要執行長寬表互換的動作
-- reshape2 package提供完整的轉換功能
-    - 寬表轉長表 `melt(資料框/寬表,id.vars=需要保留的欄位)`
-    - 長表轉寬表 `dcast(資料框/長表,寬表分列依據~分欄位依據)`
+- tidyr package提供完整的轉換功能
+    - 寬表轉長表 `gather(資料/寬表,key=長表標籤欄位名,value=長表數值欄位名,-保留欄位名)`
+    - 長表轉寬表 `spread(資料/長表,欄位依據,數值依據)`
     
 長表與寬表
 ====================================
-原來的`airquality`資料框中，有Ozone, Solar.R, Wind, Temp, Month, Day等六個欄位 (Column)，屬於寬表
+原來的`DiagSumS`資料框中，有診斷類別1~10等欄位 (Column)，屬於寬表
 ```{r eval=F}
-head(airquality,3)
+DiagWide<-DiagSumS %>% 
+  select(住院號,starts_with("診斷類別"),-contains("名稱")) 
+DiagWide%>% head(3)
 ```
 ```{r echo=F}
-knitr::kable(head(airquality,3)) 
+DiagWide<-DiagSumS %>% 
+  select(住院號,starts_with("診斷類別"),-contains("名稱")) 
+
+knitr::kable(DiagWide %>% 
+  head(3)) 
 ```
 
-寬表轉長表 melt（）
+寬表轉長表 gather（）
 ====================================
 
-- 保留Month和Day兩個欄位
-- 將其他欄位的名稱整合至variable欄位，數值整合至value欄位
+- 保留住院號欄位
+- 將其他欄位的名稱整合至**診斷類別**欄位，數值整合至**診斷碼**欄位
 ```{r}
-library(reshape2)
-airqualityM<-melt(airquality,id.vars = c("Month","Day")) ##欄位需要保留"Month","Day"
+library(tidyr)
+DiagLong<-gather(DiagWide,診斷類別,診斷碼,-住院號)
 ```
 ```{r eval=F}
-head(airqualityM)
+head(DiagLong %>% arrange(住院號))
 ```
 ```{r echo=F}
-knitr::kable(head(airqualityM)) 
+knitr::kable(head(DiagLong%>% arrange(住院號))) 
 ```
 
-長表轉寬表 dcast（）
+長表轉寬表 spread（）
 ====================================
 
-- `airqualityM`資料框中，剩下Month, Day, variable, value等四個欄位 (Column)，屬於長表
-- variable欄位的值轉換為新欄位，並將value欄位填回新增的欄位
+- `DiagLong`資料框中，剩下住院號，診斷類別，診斷碼等三個欄位 (Column)，屬於長表
+- 診斷類別欄位的值轉換為新欄位名稱，並將診斷碼欄位填回新增的欄位
 
 ```{r}
-#欄位保留"Month","Day"外，其他欄位由variable定義
-airqualityCast<-dcast(airqualityM, Month +Day~variable) 
+DiagWide2<-spread(DiagLong, 診斷類別,診斷碼) 
 ```
 ```{r eval=F}
-head(airqualityCast)
+head(DiagWide2)
 ```
 ```{r echo=F}
-knitr::kable(head(airqualityCast))
+knitr::kable(head(DiagWide2))
 ```
 

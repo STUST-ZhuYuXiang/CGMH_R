@@ -19,12 +19,14 @@ navigation: slide
 
 Table 1
 ========================================================
-```{r message=F}
+
+```r
 library(readr)
 # 讀入疾病統計檔資料，請將檔案放在專案路徑下
 DiagSumS <- read_csv("DiagSumS.csv")
 ```
-```{r message=F}
+
+```r
 #第一次使用前先安裝
 #install.packages("tableone")
 library(tableone)
@@ -33,21 +35,50 @@ CreateTableOne(data=DiagSumS,
                vars = c("年齡","來源別","住院天數"))
 ```
 
+```
+                      Stratified by 性別
+                       F             M             p      test
+  n                     1672            31                    
+  年齡 (mean (sd))     53.15 (11.86) 42.48 (10.55) <0.001     
+  來源別 = O (%)        1423 (85.1)     24 (77.4)   0.351     
+  住院天數 (mean (sd))  5.41 (7.80)   5.00 (5.07)   0.773     
+```
+
 Table 1
 ========================================================
-```{r message=F}
+
+```r
 CreateTableOne(data=DiagSumS,
                strata = "性別",
                vars = c("年齡","來源別","住院天數"))
 ```
 
+```
+                      Stratified by 性別
+                       F             M             p      test
+  n                     1672            31                    
+  年齡 (mean (sd))     53.15 (11.86) 42.48 (10.55) <0.001     
+  來源別 = O (%)        1423 (85.1)     24 (77.4)   0.351     
+  住院天數 (mean (sd))  5.41 (7.80)   5.00 (5.07)   0.773     
+```
+
 Table 1 to Excel?
 ========================================================
-```{r message=F}
+
+```r
 t1<-CreateTableOne(data=DiagSumS,
                strata = "性別",
                vars = c("年齡","來源別","住院天數"))
 print(t1, quote = TRUE, noSpaces = TRUE)
+```
+
+```
+                        "Stratified by 性別"
+ ""                      "F"             "M"             "p"      "test"
+  "n"                    "1672"          "31"            ""       ""    
+  "年齡 (mean (sd))"     "53.15 (11.86)" "42.48 (10.55)" "<0.001" ""    
+  "來源別 = O (%)"       "1423 (85.1)"   "24 (77.4)"     "0.351"  ""    
+  "住院天數 (mean (sd))" "5.41 (7.80)"   "5.00 (5.07)"   "0.773"  ""    
 ```
 
 資料視覺化大綱
@@ -149,7 +180,8 @@ type:sub-section
 
 ggplot() 
 ====================================
-```{r warning=F, message=F}
+
+```r
 library(ggplot2) 
 ##先安裝 install.packages("ggplot2")
 ```
@@ -162,46 +194,59 @@ ggplot() 設定重要元素
     - aes(x = Species, y = Sepal.Length)
 - **Geometric objects**
     - geom_point()
-```{r, fig.height=3.5}
+
+```r
 ggplot(iris, 
        aes(x = Species, y = Sepal.Length)) + 
     geom_point()
 ```
 
+![plot of chunk unnamed-chunk-6](03Visualization-figure/unnamed-chunk-6-1.png)
+
 ggplot() geom_boxpolt()
 ====================================
 用`geom_boxplot()`改畫盒狀圖
-```{r, fig.height=4}
+
+```r
 ggplot(iris, 
        aes(x = Species, 
            y = Sepal.Length)) + 
     geom_boxplot()
 ```
 
+![plot of chunk unnamed-chunk-7](03Visualization-figure/unnamed-chunk-7-1.png)
+
 ggplot() Faceting
 ====================================
 **直向分類**~**橫向分類**
-```{r, fig.height=4}
+
+```r
 ggplot(iris, 
        aes(x = Sepal.Width, 
            y = Sepal.Length)) + 
     geom_point()+facet_grid(Species~.)
 ```
 
+![plot of chunk unnamed-chunk-8](03Visualization-figure/unnamed-chunk-8-1.png)
+
 ggplot() Faceting
 ====================================
 **直向分類**~**橫向分類**
-```{r, fig.height=4}
+
+```r
 ggplot(iris, 
        aes(x = Sepal.Width, 
            y = Sepal.Length)) + 
     geom_point()+facet_grid(.~Species)
 ```
 
+![plot of chunk unnamed-chunk-9](03Visualization-figure/unnamed-chunk-9-1.png)
+
 ggplot() geom_smooth()
 ====================================
 替xy散佈圖加上趨勢線
-```{r, fig.height=4}
+
+```r
 ggplot(iris, 
        aes(x = Sepal.Width, 
            y = Sepal.Length)) + 
@@ -209,10 +254,13 @@ ggplot(iris,
     geom_smooth()
 ```
 
+![plot of chunk unnamed-chunk-10](03Visualization-figure/unnamed-chunk-10-1.png)
+
 ggplot() geom_smooth()
 ====================================
 替xy散佈圖加上趨勢線，使用linear regresion
-```{r, fig.height=4}
+
+```r
 ggplot(iris, 
        aes(x = Sepal.Width, 
            y = Sepal.Length)) + 
@@ -220,26 +268,34 @@ ggplot(iris,
     geom_smooth(method='lm')
 ```
 
+![plot of chunk unnamed-chunk-11](03Visualization-figure/unnamed-chunk-11-1.png)
+
 ggplot() geom_line()
 ====================================
 改用`geom_line()`畫線
-```{r, fig.height=4}
+
+```r
 ggplot(iris, 
        aes(x = Sepal.Width, 
            y = Sepal.Length)) + 
     geom_line()+facet_grid(Species~.)
 ```
 
+![plot of chunk unnamed-chunk-12](03Visualization-figure/unnamed-chunk-12-1.png)
+
 ggplot() 顏色分組
 ====================================
 改用顏色分組，使用`aes(color='group name')`
-```{r, fig.height=4}
+
+```r
 ggplot(iris, 
        aes(x = Sepal.Width, 
            y = Sepal.Length,
            color=Species)) + 
     geom_line()
 ```
+
+![plot of chunk unnamed-chunk-13](03Visualization-figure/unnamed-chunk-13-1.png)
 
 ggplot() 綜合練習 
 ====================================
@@ -296,7 +352,8 @@ ggmap package
 - 把google map載入並作圖的套件
 - 基於`ggplot2`套件開發
 - 第一次使用前需要安裝
-```{r,eval=F,warning=F,message=F}
+
+```r
 ##第一次使用前先安裝
 install.packages("ggmap") 
 ```
@@ -309,7 +366,8 @@ install.packages("ggmap")
 
 get_map() + ggmap()
 ====================================
-```{r, warning=F,message=F, fig.height=5}
+
+```r
 library(ggmap)
 twmap <- get_map(location = 'Taiwan', 
                  zoom = 7,
@@ -317,11 +375,14 @@ twmap <- get_map(location = 'Taiwan',
 ggmap(twmap)
 ```
 
+![plot of chunk unnamed-chunk-15](03Visualization-figure/unnamed-chunk-15-1.png)
+
 ggmap + open data 資料載入
 ====================================
 - 只要資料有經緯度等資訊，就可以使用`ggmap` package與各式資料結合呈現
 - [台北市水質資料](http://data.taipei/opendata/datalist/apiAccess?scope=resourceAquire&rid=190796c8-7c56-42e0-8068-39242b8ec927)
-```{r message=F, warning=F}
+
+```r
 library(jsonlite)
 library(RCurl)
 WaterData<-fromJSON(getURL("http://data.taipei/opendata/datalist/apiAccess?scope=resourceAquire&rid=190796c8-7c56-42e0-8068-39242b8ec927"))
@@ -333,9 +394,27 @@ WaterDataClean<-WaterDataFrame[WaterDataFrame$qua_cntu>=0,]
 head(WaterDataClean)
 ```
 
+```
+  _id update_date update_time       qua_id                code_name
+1   1  2017-07-29  16:45:00   CS00                       雙溪淨水場
+2   2  2017-07-29  16:45:00   CS01                         衛理女中
+3   3  2017-07-29  16:45:00   CS02         雙溪國小                
+4   4  2017-07-29  16:45:00   CS03                       華興加壓站
+5   5  2017-07-29  16:45:00   CX00                       長興淨水場
+6   6  2017-07-29  16:45:00   CX02                         市政大樓
+  longitude latitude qua_cntu qua_cl qua_ph
+1  121.5609 25.11574     0.02   0.57    7.4
+2  121.5440 25.10325     0.08    0.4    7.6
+3  121.5556 25.10763     0.06   0.33    7.6
+4  121.5348 25.10356     0.12   0.42    7.4
+5  121.5404 25.01633     0.03   0.51    7.3
+6  121.5566 25.04250     0.05   0.57    7.3
+```
+
 ggmap + open data 繪圖
 ====================================
-```{r eval=F, message=F, warning=F}
+
+```r
 library(ggmap)
 TaipeiMap <- get_map(
     location = c(121.43,24.93,121.62,25.19), 
@@ -352,20 +431,7 @@ TaipeiMapO
 
 ggmap + open data
 ====================================
-```{r echo=FALSE, fig.height=8}
-library(ggmap)
-TaipeiMap <- get_map(
-    location = c(121.43,24.93,121.62,25.19), 
-    zoom = 11, maptype = 'roadmap')
-TaipeiMapO <- ggmap(TaipeiMap)+ 
-    geom_point(data=WaterDataClean, 
-               aes(x=longitude, y=latitude,
-                   color=qua_cntu,size=3.5))+ 
-    scale_color_continuous(
-        low = "yellow",high = "red")+ 
-    guides(size=FALSE)
-TaipeiMapO
-```
+![plot of chunk unnamed-chunk-18](03Visualization-figure/unnamed-chunk-18-1.png)
 
 ggmap + 地圖型態
 ====================================
@@ -382,7 +448,8 @@ ggmap + 地圖型態
 ggmap + extent
 ====================================
 透過設定`extent`參數可將地圖輸出樣式改為滿版
-```{r eval=F,warning=F,message=F, fig.height=3}
+
+```r
 library(ggmap)
 TaipeiMap = get_map(
     location = c(121.43,24.93,121.62,25.19), 
@@ -394,14 +461,7 @@ ggmap(TaipeiMap,extent = 'device')
 ggmap + extent
 ====================================
 透過設定`extent`參數可將地圖輸出樣式改為滿版
-```{r echo=F,warning=F,message=F, fig.height=8}
-library(ggmap)
-TaipeiMap = get_map(
-    location = c(121.43,24.93,121.62,25.19), 
-    zoom = 14, maptype = 'roadmap')
-#extent = 'device' 滿版
-ggmap(TaipeiMap,extent = 'device') 
-```
+![plot of chunk unnamed-chunk-20](03Visualization-figure/unnamed-chunk-20-1.png)
 
 ggmap() 練習 
 ====================================
@@ -420,16 +480,7 @@ incremental:true
 
 ggmap() 練習輸出圖檔
 ====================================
-```{r echo=F, fig.height=8}
-twmap <- get_map(
-    location = 'Taoyuan', 
-    zoom = 11,
-    language = "zh-TW")
-ggmap(twmap)+
-    geom_point(aes(x=121.389539,
-                   y=25.035225,
-                   color="red"))
-```
+![plot of chunk unnamed-chunk-21](03Visualization-figure/unnamed-chunk-21-1.png)
 
 
 ggmap 參考資料
@@ -446,12 +497,14 @@ Choropleth map面量圖
 - `choroplethr` package來畫面量圖
 - 基於`ggplot2` package的`面量圖`做圖工具
 - 建議同時安裝`choroplethrMaps` package
-```{r,eval=F,warning=F,message=F}
+
+```r
 ##第一次使用前先安裝
 install.packages(c("choroplethr",
                    "choroplethrMaps")) 
 ```
-```{r, warning=F,message=F}
+
+```r
 library(choroplethr)
 ```
 
@@ -459,11 +512,14 @@ choroplethr package
 ====================================
 - 內建美國各州地圖與人口學資料
 - 使用`state_choropleth()`函式畫出美國人口分布
-```{r, fig.height=3.5}
+
+```r
 data(df_pop_state) #記載各州人口數的資料
 #把各州人口畫在地圖上
 state_choropleth(df_pop_state) 
 ```
+
+![plot of chunk unnamed-chunk-24](03Visualization-figure/unnamed-chunk-24-1.png)
 
 Taiwan的面量圖
 ====================================
@@ -491,31 +547,48 @@ type:sub-section
 
 Heatmap
 ====================================
-```{r message=FALSE,warning=F}
+
+```r
 #讀.csv檔案
 nba <- read.csv("http://datasets.flowingdata.com/ppg2008.csv")
 head(nba,3)
 ```
 
+```
+           Name  G  MIN  PTS  FGM  FGA   FGP FTM FTA   FTP X3PM X3PA  X3PP
+1  Dwyane Wade  79 38.6 30.2 10.8 22.0 0.491 7.5 9.8 0.765  1.1  3.5 0.317
+2 LeBron James  81 37.7 28.4  9.7 19.9 0.489 7.3 9.4 0.780  1.6  4.7 0.344
+3  Kobe Bryant  82 36.2 26.8  9.8 20.9 0.467 5.9 6.9 0.856  1.4  4.1 0.351
+  ORB DRB TRB AST STL BLK  TO  PF
+1 1.1 3.9 5.0 7.5 2.2 1.3 3.4 2.3
+2 1.3 6.3 7.6 7.2 1.7 1.1 3.0 1.7
+3 1.1 4.1 5.2 4.9 1.5 0.5 2.6 2.3
+```
+
 Heatmap
 ====================================
 為了做圖，將寬表轉長表
-```{r eval=F,message=FALSE,warning=F}
+
+```r
 library(reshape2) #for melt()
 #寬表轉長表,以名字作依據
 nba.m <- melt(nba,id.vars = "Name") 
 head(nba.m,5)
 ```
-```{r echo=F,message=FALSE,warning=F}
-library(reshape2) 
-nba.m <- melt(nba,id.vars = "Name") 
-knitr::kable(head(nba.m,5))
-```
+
+|Name          |variable | value|
+|:-------------|:--------|-----:|
+|Dwyane Wade   |G        |    79|
+|LeBron James  |G        |    81|
+|Kobe Bryant   |G        |    82|
+|Dirk Nowitzki |G        |    81|
+|Danny Granger |G        |    67|
 
 geom_tile()
 ====================================
 將Geometric objects指定為`geom_tile()`
-```{r message=FALSE,warning=F,fig.height=4}
+
+```r
 library(ggplot2) #for ggplot()
 ggplot(nba.m, aes(variable, Name)) + 
     geom_tile(aes(fill = value),
@@ -524,29 +597,31 @@ ggplot(nba.m, aes(variable, Name)) +
         low = "white",high = "steelblue") 
 ```
 
+![plot of chunk unnamed-chunk-28](03Visualization-figure/unnamed-chunk-28-1.png)
+
 geom_tile() + scale()
 ====================================
 - 因為G欄資料明顯大於其他欄位，導致顏色差異不明顯
 - 將個欄位的資料標準化處理
 
-```{r eval=F,message=FALSE,warning=F,fig.height=4}
+
+```r
 #scale處理
 library(dplyr)
 nba.s<-nba %>% 
     mutate_each(funs(scale), -Name) 
 head(nba.s,2)
 ```
-```{r echo=F,message=FALSE,warning=F,fig.height=4}
-#scale處理
-library(dplyr)
-nba.s<-nba %>% 
-    mutate_each(funs(scale), -Name) 
-knitr::kable(head(nba.s,2))
-```
+
+|Name         |         G|       MIN|      PTS|      FGM|      FGA|       FGP|      FTM|      FTA|        FTP|       X3PM|      X3PA|        X3PP|         ORB|        DRB|        TRB|      AST|      STL|       BLK|       TO|         PF|
+|:------------|---------:|---------:|--------:|--------:|--------:|---------:|--------:|--------:|----------:|----------:|---------:|-----------:|-----------:|----------:|----------:|--------:|--------:|---------:|--------:|----------:|
+|Dwyane Wade  | 0.6179300| 1.0019702| 3.179941| 2.920022| 2.596832| 0.5136017| 1.917475| 2.110772| -0.7401673| -0.1080044| 0.1303647| -0.15749098| -0.27213551| -0.3465676| -0.3287465| 1.652247| 2.558238| 1.2064646| 1.790445| -0.2984568|
+|LeBron James | 0.7693834| 0.6119299| 2.566974| 1.957185| 1.697237| 0.4649190| 1.778729| 1.896589| -0.5233214|  0.4920201| 0.6971679|  0.02738974| -0.06117775|  1.0080940|  0.6605370| 1.516147| 1.367252| 0.8627425| 1.059651| -1.3903719|
 
 geom_tile() + scale()
 ====================================
-```{r message=FALSE,warning=F,fig.height=4}
+
+```r
 nba.s.m <- melt(nba.s) ##寬轉長
 ggplot(nba.s.m, aes(variable, Name)) + 
     geom_tile(aes(fill = value),
@@ -554,6 +629,8 @@ ggplot(nba.s.m, aes(variable, Name)) +
     scale_fill_gradient(
         low = "white",high = "steelblue") 
 ```
+
+![plot of chunk unnamed-chunk-31](03Visualization-figure/unnamed-chunk-31-1.png)
 
 [How to Make a Heatmap – a Quick and Easy Solution](http://flowingdata.com/2010/01/21/how-to-make-a-heatmap-a-quick-and-easy-solution/)
 
@@ -582,15 +659,28 @@ type:sub-section
 
 treemap() data
 ====================================
-```{r treemap1,message=FALSE,warning=F,fig.height=4}
+
+```r
 library(treemap)
 data(GNI2014)
 knitr::kable(head(GNI2014))
 ```
 
+
+
+|   |iso3 |country          |continent     | population|    GNI|
+|:--|:----|:----------------|:-------------|----------:|------:|
+|3  |BMU  |Bermuda          |North America |      67837| 106140|
+|4  |NOR  |Norway           |Europe        |    4676305| 103630|
+|5  |QAT  |Qatar            |Asia          |     833285|  92200|
+|6  |CHE  |Switzerland      |Europe        |    7604467|  88120|
+|7  |MAC  |Macao SAR, China |Asia          |     559846|  76270|
+|8  |LUX  |Luxembourg       |Europe        |     491775|  75990|
+
 treemap()
 ====================================
-```{r treemap2,message=FALSE,warning=F,fig.height=4}
+
+```r
 library(treemap)
 data(GNI2014)
 treemap(GNI2014,
@@ -599,6 +689,8 @@ treemap(GNI2014,
        vColor="GNI", #顏色深淺
        type="value")
 ```
+
+![plot of chunk treemap2](03Visualization-figure/treemap2-1.png)
 
 互動式資料呈現
 ====================================

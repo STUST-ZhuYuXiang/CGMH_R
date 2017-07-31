@@ -47,3 +47,5 @@ Temporary Items
 .apdisk
 *.csv
 ~$R101_0724.pptx
+Data.zip
+.Rproj.user
