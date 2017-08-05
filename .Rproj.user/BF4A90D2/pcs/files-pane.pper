@@ -2,6 +2,10 @@
     "path" : "C:/Users/yjtseng/Dropbox/CGU/CGMH_R",
     "sortOrder" : [
         {
+            "ascending" : false,
+            "columnIndex" : 4
+        },
+        {
             "ascending" : true,
             "columnIndex" : 2
         }

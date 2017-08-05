@@ -31,8 +31,8 @@ DiagSumS <- read_csv("DiagSumS.csv")
 #install.packages("tableone")
 library(tableone)
 CreateTableOne(data=DiagSumS,
-               strata = "性別",
-               vars = c("年齡","來源別","住院天數"))
+      strata = "性別",
+      vars = c("年齡","來源別","住院天數"))
 ```
 
 ```
@@ -49,8 +49,8 @@ Table 1
 
 ```r
 CreateTableOne(data=DiagSumS,
-               strata = "性別",
-               vars = c("年齡","來源別","住院天數"))
+      strata = "性別",
+      vars = c("年齡","來源別","住院天數"))
 ```
 
 ```
@@ -67,8 +67,8 @@ Table 1 to Excel?
 
 ```r
 t1<-CreateTableOne(data=DiagSumS,
-               strata = "性別",
-               vars = c("年齡","來源別","住院天數"))
+          strata = "性別",
+          vars = c("年齡","來源別","住院天數"))
 print(t1, quote = TRUE, noSpaces = TRUE)
 ```
 
@@ -395,20 +395,20 @@ head(WaterDataClean)
 ```
 
 ```
-  _id update_date update_time       qua_id                code_name
-1   1  2017-07-29  16:45:00   CS00                       雙溪淨水場
-2   2  2017-07-29  16:45:00   CS01                         衛理女中
-3   3  2017-07-29  16:45:00   CS02         雙溪國小                
-4   4  2017-07-29  16:45:00   CS03                       華興加壓站
-5   5  2017-07-29  16:45:00   CX00                       長興淨水場
-6   6  2017-07-29  16:45:00   CX02                         市政大樓
-  longitude latitude qua_cntu qua_cl qua_ph
-1  121.5609 25.11574     0.02   0.57    7.4
-2  121.5440 25.10325     0.08    0.4    7.6
-3  121.5556 25.10763     0.06   0.33    7.6
-4  121.5348 25.10356     0.12   0.42    7.4
-5  121.5404 25.01633     0.03   0.51    7.3
-6  121.5566 25.04250     0.05   0.57    7.3
+  _id update_date update_time       qua_id  code_name longitude latitude
+1   1  2017-08-05  22:15:00   CS00         雙溪淨水場  121.5609 25.11574
+2   2  2017-08-05  22:15:00   CS01           衛理女中  121.5440 25.10325
+4   4  2017-08-05  22:15:00   CS03         華興加壓站  121.5348 25.10356
+5   5  2017-08-05  22:15:00   CX00         長興淨水場  121.5404 25.01633
+6   6  2017-08-05  22:15:00   CX02           市政大樓  121.5566 25.04250
+7   7  2017-08-05  22:15:00   CX03             市議會  121.5536 25.04001
+  qua_cntu qua_cl qua_ph
+1     0.02   0.59    7.5
+2     0.08   0.37    7.5
+4     0.11   0.31    7.3
+5     0.02   0.53    7.4
+6     0.04   0.59    7.3
+7     0.04   0.52    7.5
 ```
 
 ggmap + open data 繪圖
@@ -445,23 +445,6 @@ ggmap + 地圖型態
 - watercolor
 - toner (stamen maps)
 
-ggmap + extent
-====================================
-透過設定`extent`參數可將地圖輸出樣式改為滿版
-
-```r
-library(ggmap)
-TaipeiMap = get_map(
-    location = c(121.43,24.93,121.62,25.19), 
-    zoom = 14, maptype = 'roadmap')
-#extent = 'device' 滿版
-ggmap(TaipeiMap,extent = 'device') 
-```
-
-ggmap + extent
-====================================
-透過設定`extent`參數可將地圖輸出樣式改為滿版
-![plot of chunk unnamed-chunk-20](03Visualization-figure/unnamed-chunk-20-1.png)
 
 ggmap() 練習 
 ====================================
@@ -480,7 +463,7 @@ incremental:true
 
 ggmap() 練習輸出圖檔
 ====================================
-![plot of chunk unnamed-chunk-21](03Visualization-figure/unnamed-chunk-21-1.png)
+![plot of chunk unnamed-chunk-19](03Visualization-figure/unnamed-chunk-19-1.png)
 
 
 ggmap 參考資料
@@ -519,7 +502,7 @@ data(df_pop_state) #記載各州人口數的資料
 state_choropleth(df_pop_state) 
 ```
 
-![plot of chunk unnamed-chunk-24](03Visualization-figure/unnamed-chunk-24-1.png)
+![plot of chunk unnamed-chunk-22](03Visualization-figure/unnamed-chunk-22-1.png)
 
 Taiwan的面量圖
 ====================================
@@ -543,46 +526,61 @@ type:sub-section
 - 搭配XY兩軸的變量
 - 使用一張圖就能表示三個維度的資訊
 - 在ggplot2套件中，可以使用`geom_tile()`來畫Heatmap
-- 以下以NBA球員的資料作為範例
+- 以下以各年度 科別/住院天數關係為例
+- [How to Make a Heatmap – a Quick and Easy Solution](http://flowingdata.com/2010/01/21/how-to-make-a-heatmap-a-quick-and-easy-solution/)
 
 Heatmap
 ====================================
 
 ```r
-#讀.csv檔案
-nba <- read.csv("http://datasets.flowingdata.com/ppg2008.csv")
-head(nba,3)
+library(readr)
+DiagSumS <- read_csv("DiagSumS.csv")
+DiagSumS$Year<-substr(DiagSumS$住院日期,1,4)
+head(
+  DiagSumS[,c("住院科別","住院日期","住院天數","Year")])
 ```
 
 ```
-           Name  G  MIN  PTS  FGM  FGA   FGP FTM FTA   FTP X3PM X3PA  X3PP
-1  Dwyane Wade  79 38.6 30.2 10.8 22.0 0.491 7.5 9.8 0.765  1.1  3.5 0.317
-2 LeBron James  81 37.7 28.4  9.7 19.9 0.489 7.3 9.4 0.780  1.6  4.7 0.344
-3  Kobe Bryant  82 36.2 26.8  9.8 20.9 0.467 5.9 6.9 0.856  1.4  4.1 0.351
-  ORB DRB TRB AST STL BLK  TO  PF
-1 1.1 3.9 5.0 7.5 2.2 1.3 3.4 2.3
-2 1.3 6.3 7.6 7.2 1.7 1.1 3.0 1.7
-3 1.1 4.1 5.2 4.9 1.5 0.5 2.6 2.3
+# A tibble: 6 x 4
+  住院科別 住院日期 住院天數  Year
+     <chr>    <int>    <int> <chr>
+1    82800 20160415        5  2016
+2    32100 20160408        2  2016
+3    81400 20160226       53  2016
+4    22100 20160412        2  2016
+5    32100 20160331        3  2016
+6    E1400 20160618        5  2016
 ```
 
 Heatmap
 ====================================
-為了做圖，將寬表轉長表
+為了做圖，做資料前處理
 
 ```r
-library(reshape2) #for melt()
-#寬表轉長表,以名字作依據
-nba.m <- melt(nba,id.vars = "Name") 
-head(nba.m,5)
+library(dplyr)
+DiagSumHM <- DiagSumS %>% rename(Dept=住院科別) %>%
+  group_by(Dept,Year) %>%
+  summarise(HosStay=mean(住院天數),N=n())
+DeptList<-DiagSumHM[DiagSumHM$N>10,]$Dept
+DiagSumHM<-DiagSumHM %>% 
+  filter(Dept %in% DeptList)
+head(DiagSumHM)
 ```
 
-|Name          |variable | value|
-|:-------------|:--------|-----:|
-|Dwyane Wade   |G        |    79|
-|LeBron James  |G        |    81|
-|Kobe Bryant   |G        |    82|
-|Dirk Nowitzki |G        |    81|
-|Danny Granger |G        |    67|
+```
+Source: local data frame [6 x 4]
+Groups: Dept [1]
+
+# A tibble: 6 x 4
+   Dept  Year HosStay     N
+  <chr> <chr>   <dbl> <int>
+1 12100  2003     5.0     1
+2 12100  2004     4.0     1
+3 12100  2006     5.0     1
+4 12100  2007     1.0     1
+5 12100  2009     2.5     4
+6 12100  2010     1.0     7
+```
 
 geom_tile()
 ====================================
@@ -590,54 +588,20 @@ geom_tile()
 
 ```r
 library(ggplot2) #for ggplot()
-ggplot(nba.m, aes(variable, Name)) + 
-    geom_tile(aes(fill = value),
+ggplot(DiagSumHM, aes(Year, Dept)) + 
+    geom_tile(aes(fill = HosStay),
               colour = "white")+ 
     scale_fill_gradient(
-        low = "white",high = "steelblue") 
+        low = "white",high = "steelblue") +
+  theme_bw()
 ```
 
-![plot of chunk unnamed-chunk-28](03Visualization-figure/unnamed-chunk-28-1.png)
+![plot of chunk unnamed-chunk-25](03Visualization-figure/unnamed-chunk-25-1.png)
 
-geom_tile() + scale()
-====================================
-- 因為G欄資料明顯大於其他欄位，導致顏色差異不明顯
-- 將個欄位的資料標準化處理
-
-
-```r
-#scale處理
-library(dplyr)
-nba.s<-nba %>% 
-    mutate_each(funs(scale), -Name) 
-head(nba.s,2)
-```
-
-|Name         |         G|       MIN|      PTS|      FGM|      FGA|       FGP|      FTM|      FTA|        FTP|       X3PM|      X3PA|        X3PP|         ORB|        DRB|        TRB|      AST|      STL|       BLK|       TO|         PF|
-|:------------|---------:|---------:|--------:|--------:|--------:|---------:|--------:|--------:|----------:|----------:|---------:|-----------:|-----------:|----------:|----------:|--------:|--------:|---------:|--------:|----------:|
-|Dwyane Wade  | 0.6179300| 1.0019702| 3.179941| 2.920022| 2.596832| 0.5136017| 1.917475| 2.110772| -0.7401673| -0.1080044| 0.1303647| -0.15749098| -0.27213551| -0.3465676| -0.3287465| 1.652247| 2.558238| 1.2064646| 1.790445| -0.2984568|
-|LeBron James | 0.7693834| 0.6119299| 2.566974| 1.957185| 1.697237| 0.4649190| 1.778729| 1.896589| -0.5233214|  0.4920201| 0.6971679|  0.02738974| -0.06117775|  1.0080940|  0.6605370| 1.516147| 1.367252| 0.8627425| 1.059651| -1.3903719|
-
-geom_tile() + scale()
-====================================
-
-```r
-nba.s.m <- melt(nba.s) ##寬轉長
-ggplot(nba.s.m, aes(variable, Name)) + 
-    geom_tile(aes(fill = value),
-              colour = "white")+ 
-    scale_fill_gradient(
-        low = "white",high = "steelblue") 
-```
-
-![plot of chunk unnamed-chunk-31](03Visualization-figure/unnamed-chunk-31-1.png)
-
-[How to Make a Heatmap – a Quick and Easy Solution](http://flowingdata.com/2010/01/21/how-to-make-a-heatmap-a-quick-and-easy-solution/)
 
 Heatmap 練習 
 ====================================
 type:alert
-incremental:true
 
 - 下載[小兒麻痺盛行率](https://raw.githubusercontent.com/CGUIM-BigDataAnalysis/BigDataCGUIM/master/104/POLIO_Incidence.csv)資料
 - 將資料載入R
@@ -647,6 +611,7 @@ incremental:true
     - 方法二 ifelse()
 - 盛行率欄位轉換成數值
     - as.numeric()
+- 將盛行率處理為每年盛行率
 - 用年份當x軸，州名當y軸，區塊顏色用盛行率填入
     - low = "white",high = "steelblue"
 
@@ -661,32 +626,40 @@ treemap() data
 ====================================
 
 ```r
-library(treemap)
-data(GNI2014)
-knitr::kable(head(GNI2014))
+library(readr)
+DiagSumS <- read_csv("DiagSumS.csv")
+library(dplyr)
+DiagSumTree<-
+  DiagSumS %>% rename(Hosp=院區,Dept=住院科別)%>% 
+  group_by(Hosp,Dept) %>% 
+  summarise(N=n(),HosDays=mean(住院天數))
+head(DiagSumTree)
 ```
 
+```
+Source: local data frame [6 x 4]
+Groups: Hosp [1]
 
-
-|   |iso3 |country          |continent     | population|    GNI|
-|:--|:----|:----------------|:-------------|----------:|------:|
-|3  |BMU  |Bermuda          |North America |      67837| 106140|
-|4  |NOR  |Norway           |Europe        |    4676305| 103630|
-|5  |QAT  |Qatar            |Asia          |     833285|  92200|
-|6  |CHE  |Switzerland      |Europe        |    7604467|  88120|
-|7  |MAC  |Macao SAR, China |Asia          |     559846|  76270|
-|8  |LUX  |Luxembourg       |Europe        |     491775|  75990|
+# A tibble: 6 x 4
+   Hosp  Dept     N   HosDays
+  <chr> <chr> <int>     <dbl>
+1     1 111T0     3 13.333333
+2     1 12100    48  2.854167
+3     1 12110     2  2.500000
+4     1 12120   133  1.706767
+5     1 121T0    75  2.093333
+6     1 12510     1  5.000000
+```
 
 treemap()
 ====================================
 
 ```r
 library(treemap)
-data(GNI2014)
-treemap(GNI2014,
-       index=c("continent", "iso3"), #分組依據
-       vSize="population", #區塊大小
-       vColor="GNI", #顏色深淺
+treemap(DiagSumTree,
+       index=c("Hosp", "Dept"), #分組依據
+       vSize="N", #區塊大小
+       vColor="HosDays", #顏色深淺
        type="value")
 ```
 

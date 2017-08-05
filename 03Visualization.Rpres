@@ -29,24 +29,24 @@ DiagSumS <- read_csv("DiagSumS.csv")
 #install.packages("tableone")
 library(tableone)
 CreateTableOne(data=DiagSumS,
-               strata = "性別",
-               vars = c("年齡","來源別","住院天數"))
+      strata = "性別",
+      vars = c("年齡","來源別","住院天數"))
 ```
 
 Table 1
 ========================================================
 ```{r message=F}
 CreateTableOne(data=DiagSumS,
-               strata = "性別",
-               vars = c("年齡","來源別","住院天數"))
+      strata = "性別",
+      vars = c("年齡","來源別","住院天數"))
 ```
 
 Table 1 to Excel?
 ========================================================
 ```{r message=F}
 t1<-CreateTableOne(data=DiagSumS,
-               strata = "性別",
-               vars = c("年齡","來源別","住院天數"))
+          strata = "性別",
+          vars = c("年齡","來源別","住院天數"))
 print(t1, quote = TRUE, noSpaces = TRUE)
 ```
 
@@ -379,29 +379,6 @@ ggmap + 地圖型態
 - watercolor
 - toner (stamen maps)
 
-ggmap + extent
-====================================
-透過設定`extent`參數可將地圖輸出樣式改為滿版
-```{r eval=F,warning=F,message=F, fig.height=3}
-library(ggmap)
-TaipeiMap = get_map(
-    location = c(121.43,24.93,121.62,25.19), 
-    zoom = 14, maptype = 'roadmap')
-#extent = 'device' 滿版
-ggmap(TaipeiMap,extent = 'device') 
-```
-
-ggmap + extent
-====================================
-透過設定`extent`參數可將地圖輸出樣式改為滿版
-```{r echo=F,warning=F,message=F, fig.height=8}
-library(ggmap)
-TaipeiMap = get_map(
-    location = c(121.43,24.93,121.62,25.19), 
-    zoom = 14, maptype = 'roadmap')
-#extent = 'device' 滿版
-ggmap(TaipeiMap,extent = 'device') 
-```
 
 ggmap() 練習 
 ====================================
@@ -427,8 +404,8 @@ twmap <- get_map(
     language = "zh-TW")
 ggmap(twmap)+
     geom_point(aes(x=121.389539,
-                   y=25.035225,
-                   color="red"))
+                   y=25.035225),
+               color="red")
 ```
 
 
@@ -487,29 +464,31 @@ type:sub-section
 - 搭配XY兩軸的變量
 - 使用一張圖就能表示三個維度的資訊
 - 在ggplot2套件中，可以使用`geom_tile()`來畫Heatmap
-- 以下以NBA球員的資料作為範例
+- 以下以各年度 科別/住院天數關係為例
+- [How to Make a Heatmap – a Quick and Easy Solution](http://flowingdata.com/2010/01/21/how-to-make-a-heatmap-a-quick-and-easy-solution/)
 
 Heatmap
 ====================================
 ```{r message=FALSE,warning=F}
-#讀.csv檔案
-nba <- read.csv("http://datasets.flowingdata.com/ppg2008.csv")
-head(nba,3)
+library(readr)
+DiagSumS <- read_csv("DiagSumS.csv")
+DiagSumS$Year<-substr(DiagSumS$住院日期,1,4)
+head(
+  DiagSumS[,c("住院科別","住院日期","住院天數","Year")])
 ```
 
 Heatmap
 ====================================
-為了做圖，將寬表轉長表
-```{r eval=F,message=FALSE,warning=F}
-library(reshape2) #for melt()
-#寬表轉長表,以名字作依據
-nba.m <- melt(nba,id.vars = "Name") 
-head(nba.m,5)
-```
-```{r echo=F,message=FALSE,warning=F}
-library(reshape2) 
-nba.m <- melt(nba,id.vars = "Name") 
-knitr::kable(head(nba.m,5))
+為了做圖，做資料前處理
+```{r message=FALSE,warning=F}
+library(dplyr)
+DiagSumHM <- DiagSumS %>% rename(Dept=住院科別) %>%
+  group_by(Dept,Year) %>%
+  summarise(HosStay=mean(住院天數),N=n())
+DeptList<-DiagSumHM[DiagSumHM$N>10,]$Dept
+DiagSumHM<-DiagSumHM %>% 
+  filter(Dept %in% DeptList)
+head(DiagSumHM)
 ```
 
 geom_tile()
@@ -517,50 +496,18 @@ geom_tile()
 將Geometric objects指定為`geom_tile()`
 ```{r message=FALSE,warning=F,fig.height=4}
 library(ggplot2) #for ggplot()
-ggplot(nba.m, aes(variable, Name)) + 
-    geom_tile(aes(fill = value),
+ggplot(DiagSumHM, aes(Year, Dept)) + 
+    geom_tile(aes(fill = HosStay),
               colour = "white")+ 
     scale_fill_gradient(
-        low = "white",high = "steelblue") 
+        low = "white",high = "steelblue") +
+  theme_bw()
 ```
 
-geom_tile() + scale()
-====================================
-- 因為G欄資料明顯大於其他欄位，導致顏色差異不明顯
-- 將個欄位的資料標準化處理
-
-```{r eval=F,message=FALSE,warning=F,fig.height=4}
-#scale處理
-library(dplyr)
-nba.s<-nba %>% 
-    mutate_each(funs(scale), -Name) 
-head(nba.s,2)
-```
-```{r echo=F,message=FALSE,warning=F,fig.height=4}
-#scale處理
-library(dplyr)
-nba.s<-nba %>% 
-    mutate_each(funs(scale), -Name) 
-knitr::kable(head(nba.s,2))
-```
-
-geom_tile() + scale()
-====================================
-```{r message=FALSE,warning=F,fig.height=4}
-nba.s.m <- melt(nba.s) ##寬轉長
-ggplot(nba.s.m, aes(variable, Name)) + 
-    geom_tile(aes(fill = value),
-              colour = "white")+ 
-    scale_fill_gradient(
-        low = "white",high = "steelblue") 
-```
-
-[How to Make a Heatmap – a Quick and Easy Solution](http://flowingdata.com/2010/01/21/how-to-make-a-heatmap-a-quick-and-easy-solution/)
 
 Heatmap 練習 
 ====================================
 type:alert
-incremental:true
 
 - 下載[小兒麻痺盛行率](https://raw.githubusercontent.com/CGUIM-BigDataAnalysis/BigDataCGUIM/master/104/POLIO_Incidence.csv)資料
 - 將資料載入R
@@ -570,6 +517,7 @@ incremental:true
     - 方法二 ifelse()
 - 盛行率欄位轉換成數值
     - as.numeric()
+- 將盛行率處理為每年盛行率
 - 用年份當x軸，州名當y軸，區塊顏色用盛行率填入
     - low = "white",high = "steelblue"
 
@@ -583,20 +531,24 @@ type:sub-section
 treemap() data
 ====================================
 ```{r treemap1,message=FALSE,warning=F,fig.height=4}
-library(treemap)
-data(GNI2014)
-knitr::kable(head(GNI2014))
+library(readr)
+DiagSumS <- read_csv("DiagSumS.csv")
+library(dplyr)
+DiagSumTree<-
+  DiagSumS %>% rename(Hosp=院區,Dept=住院科別)%>% 
+  group_by(Hosp,Dept) %>% 
+  summarise(N=n(),HosDays=mean(住院天數))
+head(DiagSumTree)
 ```
 
 treemap()
 ====================================
 ```{r treemap2,message=FALSE,warning=F,fig.height=4}
 library(treemap)
-data(GNI2014)
-treemap(GNI2014,
-       index=c("continent", "iso3"), #分組依據
-       vSize="population", #區塊大小
-       vColor="GNI", #顏色深淺
+treemap(DiagSumTree,
+       index=c("Hosp", "Dept"), #分組依據
+       vSize="N", #區塊大小
+       vColor="HosDays", #顏色深淺
        type="value")
 ```
 
