@@ -1,7 +1,6 @@
 R語言基礎+資料載入與前處理
 ========================================================
 author: 長庚資管 曾意儒 Yi-Ju Tseng
-date: 2017/07/24
 autosize: true
 font-family: 'Microsoft JhengHei'
 navigation: slide
@@ -40,7 +39,7 @@ knitr::include_graphics("figures/RStudio.png")
 RStudio 使用步驟
 ========================================================
 - New Project (如果原本沒有的話) **CGMH_R**
-- New R Script (如果原本沒有的話) **0724.R**
+- New R Script (如果原本沒有的話) **20180706.R**
 - 在左上方**程式碼編輯區 Source editor**撰寫程式碼
 - 將需要執行的程式碼反白，點選**Run**，或**Ctrl+Enter**，執行程式碼
 - 將游標移至需要執行的程式碼，點選**Run** 也可執行該行程式碼
@@ -128,8 +127,9 @@ Variable 命名規則
 ========================================================
 - 不可使用保留字
     - break, else, FALSE, for, function, if, Inf, NA, NaN, next, repeat, return, TRUE, while等
+    - 在RStudio輸入，會變色
 - 開頭只能是英文字，或 `.`
-- 大小寫敏感
+- 大小寫敏感（白話文：大小寫有差）
 
 
 資料型態
@@ -247,7 +247,9 @@ num1==num2
 ```{r log2}
 char1<-"abcTest" 
 char2<-"defTest"
+char3<-"AbcTest"
 char1>char2
+char1>char3
 ```
 
 基本運算子: 邏輯判斷
@@ -447,7 +449,7 @@ StuDF
 - 欄位的資料型態相同
 - 每一列有列名
     - 依序指派1~n作為列名
-
+- **stringsAsFactors = F**
 
 資料框 data.frame
 ======================================================== 
@@ -524,7 +526,7 @@ knitr::include_graphics("figures/import.png")
 
 Import Dataset功能 (RStudio)
 ====================================
-- 選取`From CSV`
+- 選取`From CSV` or `From text (readr)` or `From text (base)`
 - 點選`Browse`按鈕開啟檔案選取器
 
 ```{r echo=FALSE}
@@ -619,7 +621,7 @@ type:sub-section
 Each column is a variable. Each row is an observation.
 
 - 一個欄位（Column）內只有一個數值，最好要有凡人看得懂的Column Name
-- 不同的觀察值應該要在不同行（Row）
+- 不同的觀察值應該要在不同列（Row）
 - 一張表裡面，有所有分析需要的資料
 - 如果一定要多張表，中間一定要有index可以把表串起來
 - One file, one table
@@ -650,6 +652,18 @@ type:sub-section
 ```{r message=F}
 library(readr)
 EMDiagS <- read_csv("EMDiagS.csv") #自行載入
+knitr::kable(head(EMDiagS))
+```
+
+資料型別檢查 - is.
+====================================
+使用`is.`函數檢查資料型別，回傳布林變數，若為**真**，回傳**TRUE**
+
+- 是否為**數字** `is.numeric(變數名稱)`
+- 是否為**文字** `is.character(變數名稱)`
+- 是否為**布林變數** `is.logical(變數名稱)`
+
+```{r message=F}
 is.numeric(EMDiagS$疾病序號)
 is.character(EMDiagS$疾病序號)
 ```
@@ -694,8 +708,10 @@ incremental:true
 
 資料年月是整數型別 (integer)，該如何將這此欄位轉成文字呢？
 ```{r}
+#提示程式碼
 library(readr)
-EMDiagS <- read_csv("EMDiagS.csv") #自行載入
+#自行載入
+EMDiagS <- read_csv("EMDiagS.csv") 
 str(EMDiagS)
 ```
 
@@ -724,6 +740,7 @@ ymd('2012/3/3')
 
 ```{r date3,message=F}
 mdy('3/3/2012')
+ymd_hms("2013/06/23 13:15:07")
 ```
 
 - 其他使用方法：[The Yhat Blog](http://blog.yhat.com/static/pdf/R_date_cheat_sheet.pdf)
@@ -1007,9 +1024,10 @@ incremental:true
 
 - 取出急診診斷資料中，所有疾病碼等於25000的診斷資料
     - [ ]
-- 取出內建資料集mtcars中，所有疾病碼為250開頭的診斷資料
+- 取出急診診斷資料中，所有疾病碼為250開頭的診斷資料
     - grepl()
     - [ ]
+    - google **Regular Expression 起始起始位置**
 
 ```{r}
 library(readr)
@@ -1094,8 +1112,6 @@ knitr::kable(tail(irisAdd,1))
 
 資料結合 (Join)
 ====================================
-原生的R環境可以用`merge()`函數將資料框結合，使用方法為`merge(資料框1,資料框2,by="結合依據欄位")`
-
 ```{r}
 BasicS <- read_csv("BasicS.csv")
 EMDiagS <- read_csv("EMDiagS.csv")
@@ -1104,18 +1120,22 @@ EMDiagS <- read_csv("EMDiagS.csv")
 資料結合 (Join)
 ====================================
 ```{r, eval=F}
+nrow(BasicS)
 head(BasicS)
 ```
 ```{r, echo=F}
+nrow(BasicS)
 knitr::kable(head(BasicS))
 ```
 
 資料結合 (Join)
 ====================================
 ```{r, eval=F}
+nrow(EMDiagS)
 head(EMDiagS)
 ```
 ```{r, echo=F}
+nrow(EMDiagS)
 knitr::kable(head(EMDiagS))
 ```
 
@@ -1136,10 +1156,18 @@ knitr::kable(head(EMDiagS))
 只保留兩張表都有的列
 使用方法 `inner_join(x, y, by = )`
 
-```{r}
+```{r, eval=F}
 #install.packages("dplyr") 第一次使用先安裝
 library(dplyr)
-inner_join(BasicS,EMDiagS,by="歸戶代號")
+BAndE<-inner_join(BasicS,EMDiagS,by="歸戶代號")
+nrow(BAndE)
+BAndE
+```
+```{r, echo=F}
+library(dplyr)
+BAndE<-inner_join(BasicS,EMDiagS,by="歸戶代號")
+nrow(BAndE)
+knitr::kable(head(BAndE))
 ```
 
 資料結合 - left_join()
@@ -1147,19 +1175,36 @@ inner_join(BasicS,EMDiagS,by="歸戶代號")
 保留左邊的表所有的列
 使用方法 `left_join(x, y, by = )`
 
-```{r}
+```{r, eval=F}
+#install.packages("dplyr") 第一次使用先安裝
 library(dplyr)
-left_join(BasicS,EMDiagS,by="歸戶代號")
+BAndEL<-left_join(BasicS,EMDiagS,by="歸戶代號")
+nrow(BAndEL)
+BAndEL
 ```
-
+```{r, echo=F}
+library(dplyr)
+BAndEL<-left_join(BasicS,EMDiagS,by="歸戶代號")
+nrow(BAndEL)
+knitr::kable(head(BAndEL))
+```
 資料結合 - right_join()
 ====================================
 保留右邊的表所有的列
 使用方法 `right_join(x, y, by = )`
 
-```{r}
+```{r, eval=F}
+#install.packages("dplyr") 第一次使用先安裝
 library(dplyr)
-right_join(BasicS,EMDiagS,by="歸戶代號")
+BAndER<-right_join(BasicS,EMDiagS,by="歸戶代號")
+nrow(BAndER)
+BAndER
+```
+```{r, echo=F}
+library(dplyr)
+BAndER<-right_join(BasicS,EMDiagS,by="歸戶代號")
+nrow(BAndER)
+knitr::kable(head(BAndER))
 ```
 
 資料結合 - full_join()
@@ -1167,9 +1212,18 @@ right_join(BasicS,EMDiagS,by="歸戶代號")
 保留所有的列
 使用方法 `full_join(x, y, by = )`
 
-```{r}
+```{r, eval=F}
+#install.packages("dplyr") 第一次使用先安裝
 library(dplyr)
-full_join(BasicS,EMDiagS,by="歸戶代號")
+BAndEF<-full_join(BasicS,EMDiagS,by="歸戶代號")
+nrow(BAndEF)
+BAndEF
+```
+```{r, echo=F}
+library(dplyr)
+BAndEF<-full_join(BasicS,EMDiagS,by="歸戶代號")
+nrow(BAndEF)
+knitr::kable(head(BAndEF))
 ```
 
 資料結合 - semi_join()
@@ -1177,10 +1231,20 @@ full_join(BasicS,EMDiagS,by="歸戶代號")
 留下左邊的ID也有出現在右邊的表的列，右表資料不會輸出
 使用方法 `semi_join(x, y, by = )`
 
-```{r}
+```{r, eval=F}
+#install.packages("dplyr") 第一次使用先安裝
 library(dplyr)
-semi_join(BasicS,EMDiagS,by="歸戶代號")
+BAndES<-semi_join(BasicS,EMDiagS,by="歸戶代號")
+nrow(BAndES)
+BAndES
 ```
+```{r, echo=F}
+library(dplyr)
+BAndES<-semi_join(BasicS,EMDiagS,by="歸戶代號")
+nrow(BAndES)
+knitr::kable(head(BAndES))
+```
+
 
 資料結合練習
 ====================================
@@ -1189,7 +1253,7 @@ type:alert
 - 讀入門診診斷檔OptDiagS.csv
 - 讀入門診醫囑檔OptOrderS.csv
 - 依照**歸戶代號**以及**門診號**，將兩張表格結合，只留下有對應到的資料
-  - 提示: by=c()
+  - 提示: by=c("歸戶代號","門診號")
 - 請問結合後的資料有幾列？
 
 
