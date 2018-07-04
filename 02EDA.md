@@ -1,7 +1,6 @@
 探索式資料分析
 ========================================================
 author: 長庚資管 曾意儒 Yi-Ju Tseng
-date: 2017/07/31
 autosize: true
 font-family: 'Microsoft JhengHei'
 navigation: slide
@@ -456,7 +455,7 @@ summarise(DiagSumS,
 ```
 
 ```
-# A tibble: 1 × 3
+# A tibble: 1 x 3
   nRecord   nID nSource
     <int> <int>   <int>
 1    1703   352       2
@@ -477,7 +476,7 @@ summarise(filter1,
 ```
 
 ```
-# A tibble: 1 × 4
+# A tibble: 1 x 4
   nRecord   nID meanAge    nM
     <int> <int>   <dbl> <int>
 1      10     9    63.1     0
@@ -512,7 +511,7 @@ filter(DiagSumS,住院天數 > 50) %>%
 ```
 
 ```
-# A tibble: 1 × 4
+# A tibble: 1 x 4
   nRecord   nID meanAge    nM
     <int> <int>   <dbl> <int>
 1      10     9    63.1     0
@@ -528,7 +527,7 @@ DiagSumE[1:5,1:2]
 ```
 
 ```
-# A tibble: 5 × 2
+# A tibble: 5 x 2
    Hosp 資料年月
   <chr>    <int>
 1     8   201604

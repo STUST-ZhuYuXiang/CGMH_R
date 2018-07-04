@@ -1,7 +1,6 @@
 資料呈現與繪圖
 ========================================================
 author: 曾意儒 Yi-Ju Tseng
-date: 2017/08/07
 autosize: true
 font-family: 'Microsoft JhengHei'
 navigation: slide
@@ -395,20 +394,20 @@ head(WaterDataClean)
 ```
 
 ```
-  _id update_date update_time       qua_id  code_name longitude latitude
-1   1  2017-08-05  22:15:00   CS00         雙溪淨水場  121.5609 25.11574
-2   2  2017-08-05  22:15:00   CS01           衛理女中  121.5440 25.10325
-4   4  2017-08-05  22:15:00   CS03         華興加壓站  121.5348 25.10356
-5   5  2017-08-05  22:15:00   CX00         長興淨水場  121.5404 25.01633
-6   6  2017-08-05  22:15:00   CX02           市政大樓  121.5566 25.04250
-7   7  2017-08-05  22:15:00   CX03             市議會  121.5536 25.04001
-  qua_cntu qua_cl qua_ph
-1     0.02   0.59    7.5
-2     0.08   0.37    7.5
-4     0.11   0.31    7.3
-5     0.02   0.53    7.4
-6     0.04   0.59    7.3
-7     0.04   0.52    7.5
+  _id update_date update_time       qua_id                code_name
+1   1  2018-07-04  23:15:00   CS00                       雙溪淨水場
+2   2  2018-07-04  23:15:00   CS01                         衛理女中
+3   3  2018-07-04  23:15:00   CS02         雙溪國小                
+4   4  2018-07-04  23:15:00   CS03                       華興加壓站
+5   5  2018-07-04  23:15:00   CX00                       長興淨水場
+6   6  2018-07-04  23:15:00   CX02                         市政大樓
+  longitude latitude qua_cntu qua_cl qua_ph
+1  121.5694 25.11419     0.02    0.6    7.5
+2  121.5523 25.10176     0.03   0.34    7.4
+3  121.5639 25.10607     0.07   0.42    7.5
+4  121.5444 25.09952     0.22   0.49    6.8
+5  121.5479 25.01451     0.03   0.53    7.2
+6  121.5640 25.03753     0.04   0.54    7.2
 ```
 
 ggmap + open data 繪圖
@@ -568,10 +567,8 @@ head(DiagSumHM)
 ```
 
 ```
-Source: local data frame [6 x 4]
-Groups: Dept [1]
-
 # A tibble: 6 x 4
+# Groups:   Dept [1]
    Dept  Year HosStay     N
   <chr> <chr>   <dbl> <int>
 1 12100  2003     5.0     1
@@ -637,10 +634,8 @@ head(DiagSumTree)
 ```
 
 ```
-Source: local data frame [6 x 4]
-Groups: Hosp [1]
-
 # A tibble: 6 x 4
+# Groups:   Hosp [1]
    Hosp  Dept     N   HosDays
   <chr> <chr> <int>     <dbl>
 1     1 111T0     3 13.333333

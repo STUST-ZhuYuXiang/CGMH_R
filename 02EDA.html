@@ -784,7 +784,7 @@ hljs.initHighlightingOnLoad();
   <div class="slides">
 
 <section data-state="section" data-transition="linear" data-transition-speed="default">
-<h1>探索式資料分析</h1><p>長庚資管 曾意儒 Yi-Ju Tseng<br/>2017&#x2F;07&#x2F;31</p>
+<h1>探索式資料分析</h1><p>長庚資管 曾意儒 Yi-Ju Tseng</p>
 
 <div class="slideContent" >
 
@@ -1060,7 +1060,7 @@ X-squared = 32.048, df = 7, p-value = 3.98e-05
 <section data-transition="linear" data-transition-speed="default">
 <h3>量化的分析方式: 雙變量-相關性</h3>
 <div class="slideContent" >
-<p>油耗跟馬力的關聯性（相關係數）</p>
+<p>年齡跟住院天數的關聯性（相關係數）</p>
 
 <pre><code class="r">cor(DiagSumS$年齡,
     DiagSumS$住院天數)
@@ -1620,7 +1620,7 @@ DiagSumS &lt;- read_csv(&quot;DiagSumS.csv&quot;)
           nSource=n_distinct(來源別))
 </code></pre>
 
-<pre><code># A tibble: 1 × 3
+<pre><code># A tibble: 1 x 3
   nRecord   nID nSource
     &lt;int&gt; &lt;int&gt;   &lt;int&gt;
 1    1703   352       2
@@ -1645,7 +1645,7 @@ summarise(filter1,
           nM=sum(性別==&quot;M&quot;))
 </code></pre>
 
-<pre><code># A tibble: 1 × 4
+<pre><code># A tibble: 1 x 4
   nRecord   nID meanAge    nM
     &lt;int&gt; &lt;int&gt;   &lt;dbl&gt; &lt;int&gt;
 1      10     9    63.1     0
@@ -1668,7 +1668,7 @@ DiagSumS &lt;- read_csv(&quot;DiagSumS.csv&quot;)
 
 <ul>
 <li class="fragment">試著用dplyr語法篩選出所有<strong>住院超過30天的</strong>的資料</li>
-<li class="fragment">計算這些資料的<strong>來源別為E的數目</strong>，<strong>診斷類別名稱1中包含“腫瘤”文字的資料比數</strong></li>
+<li class="fragment">計算這些資料的<strong>來源別為E的數目</strong>，<strong>診斷類別名稱1中包含“腫瘤”文字的資料筆數</strong></li>
 <li class="fragment">提示: grepl</li>
 </ul>
 
@@ -1689,7 +1689,7 @@ DiagSumS &lt;- read_csv(&quot;DiagSumS.csv&quot;)
           nM=sum(性別==&quot;M&quot;))
 </code></pre>
 
-<pre><code># A tibble: 1 × 4
+<pre><code># A tibble: 1 x 4
   nRecord   nID meanAge    nM
     &lt;int&gt; &lt;int&gt;   &lt;dbl&gt; &lt;int&gt;
 1      10     9    63.1     0
@@ -1707,7 +1707,7 @@ DiagSumS &lt;- read_csv(&quot;DiagSumS.csv&quot;)
 DiagSumE[1:5,1:2]
 </code></pre>
 
-<pre><code># A tibble: 5 × 2
+<pre><code># A tibble: 5 x 2
    Hosp 資料年月
   &lt;chr&gt;    &lt;int&gt;
 1     8   201604
@@ -1726,7 +1726,7 @@ DiagSumE[1:5,1:2]
 <ul>
 <li>設定分組依據</li>
 <li>與<code>summarise()</code>函式合併使用</li>
-<li>計算各<strong>性別</strong>（以性別作為分組依據）的<strong>資料比數</strong>、<strong>平均年齡</strong>以及<strong>平均住院天數</strong></li>
+<li>計算各<strong>性別</strong>（以性別作為分組依據）的<strong>資料筆數</strong>、<strong>平均年齡</strong>以及<strong>平均住院天數</strong></li>
 </ul>
 
 <pre><code class="r">DiagSumE &lt;- rename(DiagSumS, Hosp = 院區,Gender=性別)
@@ -1801,7 +1801,7 @@ group_by(DiagSumE,Gender)%&gt;%
 <div class="slideContent" >
 <ul>
 <li>可設定<strong>多個</strong>分組依據</li>
-<li>計算各<strong>院區</strong>各<strong>性別</strong>的<strong>資料比數</strong>、<strong>平均年齡</strong>以及<strong>平均住院天數</strong></li>
+<li>計算各<strong>院區</strong>各<strong>性別</strong>的<strong>資料筆數</strong>、<strong>平均年齡</strong>以及<strong>平均住院天數</strong></li>
 </ul>
 
 <pre><code class="r">DiagSumE &lt;- rename(DiagSumS, Hosp = 院區,Gender=性別)
@@ -2120,8 +2120,8 @@ DiagSumS &lt;- read_csv(&quot;DiagSumS.csv&quot;)
 
 <ul>
 <li class="fragment">試著用dplyr語法篩選出所有<strong>年齡超過60</strong>的<strong>女性</strong>資料</li>
-<li class="fragment">依<strong>院區</strong>，計算<strong>總資料比數</strong>、<strong>來源別為E的資料個數</strong>，<strong>診斷類別名稱1中有腫瘤字樣的資料比數</strong></li>
-<li class="fragment">依總資料比數<strong>由大到小</strong>排序</li>
+<li class="fragment">依<strong>院區</strong>，計算<strong>總資料筆數</strong>、<strong>來源別為E的資料個數</strong>，<strong>診斷類別名稱1中有腫瘤字樣的資料筆數</strong></li>
+<li class="fragment">依總資料筆數<strong>由大到小</strong>排序</li>
 <li class="fragment">用pipe <strong>%&gt;%</strong></li>
 </ul>
 
