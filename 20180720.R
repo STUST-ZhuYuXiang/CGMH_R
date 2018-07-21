@@ -92,7 +92,8 @@ ggplot(iris,
        aes(x = Sepal.Width, 
            y = Sepal.Length,
            color=Species)) + 
-  geom_point()
+  geom_point()+theme_bw()+
+  scale_color_grey(start = 0, end = 0.9)
 
 
 library(ggplot2)
@@ -100,4 +101,4 @@ ggplot(iris,aes(x=Sepal.Length,y=Sepal.Width))+
   geom_point()+facet_grid(.~Species)
 
 ggplot(iris,aes(x=Species,y=Sepal.Width))+
-  geom_boxplot()
+  geom_boxplot()+labs(x="test x",y="test y")
