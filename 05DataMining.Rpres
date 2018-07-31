@@ -105,16 +105,6 @@ data("ToothGrowth")
 knitr::kable(head(ToothGrowth))
 ```
 
-迴歸線作圖
-====================================
-```{r linear2,warning=F,message=F,fig.height=4}
-library(ggplot2)
-ggplot(ToothGrowth,
-       aes(x=len,
-           y=supp))+
-  geom_point()+
-  geom_smooth(method = "glm")
-```
 
 lm()
 ====================================
@@ -254,6 +244,8 @@ type:alert
   - install.packages("mlbench")
   - library(mlbench)
   - data(PimaIndiansDiabetes2)
+  - PimaIndiansDiabetes2<-
+  PimaIndiansDiabetes2[complete.cases(PimaIndiansDiabetes2),]
 - 使用全部欄位預測diabetes
   - glm()廣義線性迴歸
   - family = "binomial"
@@ -752,7 +744,7 @@ pred<-
   predict(DTFitBinary, 
           newdata = testDataBinary, 
           type = "prob")
-knitr::kable(pred)
+knitr::kable(head(pred))
 ```
 
 caret: evaluation
