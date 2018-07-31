@@ -747,6 +747,14 @@ pred<-
 knitr::kable(head(pred))
 ```
 
+效能指標名詞解釋
+====================================
+```{r echo=FALSE}
+knitr::include_graphics("figures/para.png")
+```
+- TP: 有病且預測也有病    FP: 沒病但是預測有病
+- TN: 沒病且預測也沒病    FN: 有病但預測沒病
+
 caret: evaluation
 ====================================
 ```{R}
