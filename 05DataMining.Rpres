@@ -156,7 +156,7 @@ Poisson distribution`次數`分佈：
 knitr::include_graphics("https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Poisson_pmf.svg/360px-Poisson_pmf.svg.png")
 ```
 
-廣義線性迴歸與NBA
+廣義線性迴歸與天竺鼠的牙齒長度
 ====================================
 分析天竺鼠`牙齒長度`與`維他命C劑量`以及`Supplement type`的關係範例
 ```{r linear4,warning=F,message=F,fig.height=4.5}
@@ -441,13 +441,13 @@ sample(1:nrow(PD2),nrow(PD2)/3)
 
 Regression 迴歸驗證：資料分組
 ====================================
-使用隨機抽樣法，選出1/3的元素位置，把NBA的資料分成Training 和 Test set
+使用隨機抽樣法，選出1/3的元素位置，把病人的資料分成Training 和 Test set
 ```{r message=FALSE,warning=FALSE}
 PD2$Test<-F #新增一個參數紀錄分組
 #隨機取1/3當Test set
 PD2[sample(1:nrow(PD2),
                             nrow(PD2)/3),]$Test<-T
-# Training set : Test set球員數
+# Training set : Test set病人數
 c(sum(PD2$Test==F),
   sum(PD2$Test==T))
 ```
