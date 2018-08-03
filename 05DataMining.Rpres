@@ -649,15 +649,15 @@ negPredValue(DMAns,
 效能指標
 ====================================
 當答案是二元，且模型輸出為連續值(如機率)時：
-
 - Area under the ROC curve (AUC)
+
 ```{r echo=FALSE}
 knitr::include_graphics("https://upload.wikimedia.org/wikipedia/commons/6/6b/Roccurves.png")
 ```
 
 效能指標 - AUC & ROC curve
 ====================================
- 計算預測效能參數 AUC
+ 計算預測效能參數 AUC，使用`pROC`
 ```{r warning=F,message=F,fig.height=4.5}
 # install.packages("pROC")
 library(pROC)
@@ -672,8 +672,7 @@ coords(result.roc, "best",
 
 效能指標 - AUC & ROC curve
 ====================================
- 計算預測效能參數 AUC
-  計算預測效能參數 AUC
+ 計算預測效能參數 AUC，使用`pROC`
 ```{r warning=F,message=F,fig.height=4.5}
 plot(result.roc, print.thres="best", 
      print.thres.best.method="closest.topleft")
@@ -681,7 +680,7 @@ plot(result.roc, print.thres="best",
 
 效能指標 - AUC & ROC curve
 ====================================
- 計算預測效能參數 AUC
+ 計算預測效能參數 AUC，使用`ROCR`
 ```{r warning=F,message=F,fig.height=4.5}
 library(ROCR)
 pred=prediction(predictPoint,
@@ -689,7 +688,12 @@ pred=prediction(predictPoint,
 #Calculate the AUC value
 perf_AUC=performance(pred,"auc") 
 AUC=perf_AUC@y.values[[1]]
-#plot the actual ROC curve
+```
+
+效能指標 - AUC & ROC curve
+====================================
+ 計算預測效能參數 AUC，使用`ROCR`
+```{r warning=F,message=F,fig.height=4.5}
 perf_ROC=performance(pred,"tpr","fpr") 
 plot(perf_ROC, main="ROC plot")
 text(0.5,0.5,paste("AUC = ",
