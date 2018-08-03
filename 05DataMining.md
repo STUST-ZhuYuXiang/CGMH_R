@@ -1,105 +1,106 @@
-åŸºç¤é†«å­¸è³‡æ–™æ¢å‹˜æ‡‰ç”¨
+°òÂ¦Âå¾Ç¸ê®Æ±´°ÉÀ³¥Î
 ========================================================
-author: é•·åºšè³‡ç®¡ æ›¾æ„å„’ Yi-Ju Tseng
+author: ªø©°¸êºŞ ´¿·N¾§ Yi-Ju Tseng
 autosize: true
 font-family: 'Microsoft JhengHei'
 navigation: slide
 
 
-å¤§ç¶±
+¤jºõ
 ====================================
 type:sub-section 
 
-- ä»€éº¼æ˜¯è³‡æ–™æ¢å‹˜
-- Regression è¿´æ­¸
-- Decision Trees æ±ºç­–æ¨¹
-- æ¨¡å‹é©—è­‰
-- æ•ˆèƒ½æŒ‡æ¨™
+- ¤°»ò¬O¸ê®Æ±´°É
+- Regression °jÂk
+- Decision Trees ¨Mµ¦¾ğ
+- ¼Ò«¬ÅçÃÒ
+- ®Ä¯à«ü¼Ğ
 - `caret` package
 
-ä»€éº¼æ˜¯è³‡æ–™æ¢å‹˜
+¤°»ò¬O¸ê®Æ±´°É
 ====================================
 
-å»ºç«‹å¾**è¼¸å…¥è³‡æ–™**å­¸ç¿’æ–°è³‡è¨Šï¼Œè®Šæˆæ™ºæ…§çš„**æ¼”ç®—æ³•**æˆ–**è³‡æ–™æ¨¡å¼**ï¼Œç”¨ä¾†**é æ¸¬äº‹ä»¶**æˆ–**å”åŠ©æ±ºç­–**
+«Ø¥ß±q**¿é¤J¸ê®Æ**¾Ç²ß·s¸ê°T¡AÅÜ¦¨´¼¼zªº**ºtºâªk**©Î**¸ê®Æ¼Ò¦¡**¡A¥Î¨Ó**¹w´ú¨Æ¥ó**©Î**¨ó§U¨Mµ¦**
 
-- ç”¨äººå·¥æ™ºæ…§ã€æ©Ÿå™¨å­¸ç¿’ã€çµ±è¨ˆå­¸ç­‰æ–¹æ³•
-- åœ¨ç›¸å°è¼ƒå¤§å‹çš„è³‡æ–™é›†ä¸­ç™¼ç¾æ¨¡å¼çš„è¨ˆç®—éç¨‹
-- ç•¶è³‡æ–™å¤ª`å°‘`æˆ–`å¤ªé«’`çš„æ™‚å€™ï¼Œè³‡æ–™æ¢å‹˜çš„æ•ˆåŠ›æœƒè¢«å½±éŸ¿
+- ¥Î¤H¤u´¼¼z¡B¾÷¾¹¾Ç²ß¡B²Î­p¾Çµ¥¤èªk
+- ¦b¬Û¹ï¸û¤j«¬ªº¸ê®Æ¶°¤¤µo²{¼Ò¦¡ªº­pºâ¹Lµ{
+- ·í¸ê®Æ¤Ó`¤Ö`©Î`¤ÓÅ¼`ªº®É­Ô¡A¸ê®Æ±´°Éªº®Ä¤O·|³Q¼vÅT
 
-è³‡æ–™æ¢å‹˜æ¢ä»¶
+¸ê®Æ±´°É±ø¥ó
 ====================================
-è³‡æ–™æ¢å‹˜è¦æ´¾ä¸Šç”¨å ´ï¼Œå¿…é ˆæœ‰ä»¥ä¸‹æ¢ä»¶ï¼š
+¸ê®Æ±´°É­n¬£¤W¥Î³õ¡A¥²¶·¦³¥H¤U±ø¥ó¡G
 
-- æœ‰ä¸€äº›æ¨¡å¼/æ¨¡å‹å¯`å­¸`
-- å¾ˆé›£å®šç¾©é€™äº›æ¨¡å¼/æ¨¡å‹
-- æœ‰è³‡æ–™å¯`å­¸`é€™äº›æ¨¡å¼/æ¨¡å‹
+- ¦³¤@¨Ç¼Ò¦¡/¼Ò«¬¥i`¾Ç`
+- «ÜÃø©w¸q³o¨Ç¼Ò¦¡/¼Ò«¬
+- ¦³¸ê®Æ¥i`¾Ç`³o¨Ç¼Ò¦¡/¼Ò«¬
 
-è³‡æ–™æ¢å‹˜å¯æ‡‰ç”¨åœ¨
-====================================
-
-- æˆæ•ˆé æ¸¬ï¼ˆæ˜¯å¦æœƒå¾©ç™¼ã€æ¢å¾©æƒ…å½¢...ç­‰ï¼‰
-- è¨ºæ–·æ¨¡å‹ï¼ˆè¨ºæ–·æ¨¡å¼å­¸ç¿’...ç­‰ï¼‰
-- è¶¨å‹¢é æ¸¬ï¼ˆæµæ„Ÿæ¡ˆä¾‹æ•¸é æ¸¬...ç­‰ï¼‰
-- ç–¾ç—…åˆ†ç¾¤
-
-è³‡æ–™æ¢å‹˜çš„åˆ†é¡
+¸ê®Æ±´°É¥iÀ³¥Î¦b
 ====================================
 
-- **ç›£ç£å¼**å­¸ç¿’èˆ‡**éç›£ç£å¼**å­¸ç¿’
-- ç›£ç£å¼å­¸ç¿’çš„ç‰¹é»æ˜¯è¨“ç·´è³‡æ–™ä¸­æœ‰**æ­£ç¢ºç­”æ¡ˆ**ï¼Œç”±è¼¸å…¥ç‰©ä»¶å’Œé æœŸè¼¸å‡ºæ‰€çµ„æˆï¼Œè€Œæ¼”ç®—æ³•å¯ä»¥ç”±è¨“ç·´è³‡æ–™ä¸­å­¸åˆ°æˆ–å»ºç«‹ä¸€å€‹æ¨¡å¼ï¼Œä¸¦ä¾æ­¤æ¨¡å¼æ¨æ¸¬æ–°çš„å¯¦ä¾‹
-- éç›£ç£å¼å­¸ç¿’å‰‡ä¸ç”¨æä¾›**æ­£ç¢ºç­”æ¡ˆ**ï¼Œä¹Ÿå°±æ˜¯ä¸éœ€è¦äººåŠ›ä¾†è¼¸å…¥æ¨™ç±¤ï¼Œå–®ç´”åˆ©ç”¨è¨“ç·´è³‡æ–™çš„ç‰¹æ€§ï¼Œå°‡è³‡æ–™åˆ†ç¾¤åˆ†çµ„ã€‚
+- ¦¨®Ä¹w´ú¡]¬O§_·|´_µo¡B«ì´_±¡§Î...µ¥¡^
+- ¶EÂ_¼Ò«¬¡]¶EÂ_¼Ò¦¡¾Ç²ß...µ¥¡^
+- ÁÍ¶Õ¹w´ú¡]¬y·P®×¨Ò¼Æ¹w´ú...µ¥¡^
+- ¯e¯f¤À¸s
 
-è³‡æ–™æ¢å‹˜çš„åˆ†é¡
+¸ê®Æ±´°Éªº¤ÀÃş
 ====================================
 
-- Supervised learning ç›£ç£å¼å­¸ç¿’
-    - Regression è¿´æ­¸ï¼šçœŸå¯¦çš„'å€¼'ï¼ˆæµæ„Ÿæ¡ˆä¾‹æ•¸ã€æ¢å¾©é‡è¡¨ç­‰ï¼‰
-    - Classification åˆ†é¡ï¼šåˆ†å…©é¡ï¼ˆP/N, Yes/No, M/F, Sick/Not sickï¼‰/åˆ†å¤šé¡ (A/B/C/D)
+- **ºÊ·ş¦¡**¾Ç²ß»P**«DºÊ·ş¦¡**¾Ç²ß
+- **ºÊ·ş¦¡¾Ç²ß**ªº¯SÂI¬O°V½m¸ê®Æ¤¤¦³**¥¿½Tµª®×**¡A¥Ñ¿é¤Jª«¥ó©M¹w´Á¿é¥X©Ò²Õ¦¨¡A¦Óºtºâªk¥i¥H¥Ñ°V½m¸ê®Æ¤¤¾Ç¨ì©Î«Ø¥ß¤@­Ó¼Ò¦¡¡A¨Ã¨Ì¦¹¼Ò¦¡±À´ú·sªº¹ê¨Ò
+- **«DºÊ·ş¦¡¾Ç²ß**«h¤£¥Î´£¨Ñ**¥¿½Tµª®×**¡A¤]´N¬O¤£»İ­n¤H¤O¨Ó¿é¤J¼ĞÅÒ¡A³æ¯Â§Q¥Î°V½m¸ê®Æªº¯S©Ê¡A±N¸ê®Æ¤À¸s¤À²Õ¡C
 
-- Unsupervised learning éç›£ç£å¼å­¸ç¿’
-    - Clustering åˆ†ç¾¤
-    - Association Rules é—œè¯å¼è¦å‰‡
-
-ç›£ç£å¼å­¸ç¿’
+¸ê®Æ±´°Éªº¤ÀÃş
 ====================================
 
-åœ¨**ç›£ç£å¼**å­¸ç¿’ä¸­å¸¸è¦‹çš„è³‡æ–™æ¢å‹˜æ¼”ç®—æ³•å¦‚ä¸‹ï¼š 
-  - Linear Regression ç·šæ€§è¿´æ­¸
-  - Logistic Regression ç¾…å‰æ–¯è¿´æ­¸ã€é‚è¼¯è¿´æ­¸
-  - Support Vector Machines æ”¯æŒå‘é‡æ©Ÿ
-  - Decision Trees æ±ºç­–æ¨¹
+- Supervised learning ºÊ·ş¦¡¾Ç²ß
+    - Regression °jÂk¡G¯u¹êªº'­È'¡]¬y·P®×¨Ò¼Æ¡B«ì´_¶qªíµ¥¡^
+    - Classification ¤ÀÃş¡G¤À¨âÃş¡]P/N, Yes/No, M/F, Sick/Not sick¡^/¤À¦hÃş (Type A/Type B/Type C/Type D)
+
+- Unsupervised learning «DºÊ·ş¦¡¾Ç²ß
+    - Clustering ¤À¸s
+    - Association Rules ÃöÁp¦¡³W«h
+
+ºÊ·ş¦¡¾Ç²ß
+====================================
+
+¦b**ºÊ·ş¦¡**¾Ç²ß¤¤±`¨£ªº¸ê®Æ±´°Éºtºâªk¦p¤U¡G 
+  - Linear Regression ½u©Ê°jÂk (¿é¥X:³sÄò­È)
+  - Logistic Regression Ã¹¦N´µ°jÂk¡BÅŞ¿è°jÂk (¿é¥X:¤G¤¸)
+  - Support Vector Machines ¤ä«ù¦V¶q¾÷ (¿é¥X:³sÄò­È/¤G¤¸)
+  - Decision Trees ¨Mµ¦¾ğ (¿é¥X:³sÄò­È/¤G¤¸)
   - K-Nearest Neighbor
-  - Neural Networks ç¥ç¶“ç¶²è·¯
-  - Deep Learning æ·±åº¦å­¸ç¿’
+  - Neural Networks ¯«¸gºô¸ô
+  - Deep Learning ²`«×¾Ç²ß
 
-éç›£ç£å¼å­¸ç¿’
+«DºÊ·ş¦¡¾Ç²ß
 ====================================
 
-åœ¨**éç›£ç£å¼**å­¸ç¿’ä¸­å¸¸è¦‹çš„è³‡æ–™æ¢å‹˜æ¼”ç®—æ³•å¦‚ä¸‹ï¼š 
-  - Hierarchical clustering éšå±¤å¼åˆ†ç¾¤
+¦b**«DºÊ·ş¦¡**¾Ç²ß¤¤±`¨£ªº¸ê®Æ±´°Éºtºâªk¦p¤U¡G 
+  - Hierarchical clustering ¶¥¼h¦¡¤À¸s
   - K-means clustering
-  - Neural Networks ç¥ç¶“ç¶²è·¯
-  - Deep Learning æ·±åº¦å­¸ç¿’
+  - Neural Networks ¯«¸gºô¸ô
+  - Deep Learning ²`«×¾Ç²ß
 
 
-Regression è¿´æ­¸
+Regression °jÂk
 ====================================
 
-- ç”¨åœ¨äº†è§£å…©å€‹æˆ–å¤šå€‹è®Šæ•¸é–“`æ˜¯å¦ç›¸é—œ`ã€`ç›¸é—œæ–¹å‘èˆ‡å¼·åº¦`
-- å»ºç«‹`æ•¸å­¸æ¨¡å‹`ä»¥ä¾¿è§€å¯Ÿç‰¹å®šè®Šæ•¸ä¾†é æ¸¬ç ”ç©¶è€…æ„Ÿèˆˆè¶£çš„è®Šæ•¸
+- ¥Î¦b¤F¸Ñ¨â­Ó©Î¦h­ÓÅÜ¼Æ¶¡`¬O§_¬ÛÃö`¡B`¬ÛÃö¤è¦V`»P`±j«×`
+- «Ø¥ß`¼Æ¾Ç¼Ò«¬`¥H«KÆ[¹î¯S©wÅÜ¼Æ¨Ó¹w´ú¬ã¨sªÌ·P¿³½ìªºÅÜ¼Æ
 
-å¸¸è¦‹çš„è¿´æ­¸åˆ†ææ¼”ç®—æ³•åŒ…æ‹¬ï¼š
+±`¨£ªº°jÂk¤ÀªRºtºâªk¥]¬A¡G
 
-- Linear Regression ç·šæ€§è¿´æ­¸
-- Logistic Regression ç¾…å‰æ–¯è¿´æ­¸ã€é‚è¼¯è¿´æ­¸
+- Linear Regression ½u©Ê°jÂk (¿é¥X:³sÄò­È)
+- Logistic Regression Ã¹¦N´µ°jÂk¡BÅŞ¿è°jÂk (¿é¥X:¤G¤¸)
 
-Linear Regression ç·šæ€§è¿´æ­¸
+Linear Regression ½u©Ê°jÂk
 ====================================
 
-- å˜—è©¦å°‡Linear Regression ç·šæ€§è¿´æ­¸ç”¨åœ¨å¤©ç«ºé¼ ç‰™é½’é•·åº¦çš„è³‡æ–™
-- åšå¤©ç«ºé¼ `ç‰™é½’é•·åº¦`èˆ‡`ç¶­ä»–å‘½CåŠ‘é‡`çš„ç·šæ€§è¿´æ­¸è§€å¯Ÿ
+- ¹Á¸Õ±NLinear Regression ½u©Ê°jÂk¥Î¦b¤ÑªÇ¹«¤ú¾¦¥Íªø±¡§Îªº¸ê®Æ
+- °µ¤ÑªÇ¹«`¤ú¾¦ªø«×`»P`ºû¥L©RC¾¯¶q`ªº½u©Ê°jÂkÆ[¹î
 
 ```r
+# install.packages("mlbench")
 library(mlbench)
 # The Effect of Vitamin C on Tooth Growth in Guinea Pigs
 data("ToothGrowth")
@@ -121,9 +122,10 @@ knitr::kable(head(ToothGrowth))
 lm()
 ====================================
 
-- åœ¨Rä¸­ï¼Œæœ€åŸºæœ¬çš„ç°¡å–®ç·šæ€§è¿´æ­¸åˆ†æç‚º`lm()`
-- `lm(formula,data=è³‡æ–™åç¨±)`ï¼Œæ­é…formulaä½¿ç”¨
-- formulaçš„æ’°å¯«æ–¹æ³•ç‚ºï¼šä¾è®Šé …~è‡ªè®Šé …1ï¼‹è‡ªè®Šé …2ï¼‹....
+- ¦bR¤¤¡A³Ì°ò¥»ªºÂ²³æ½u©Ê°jÂk¤ÀªR¬°`lm()`
+- `lm(formula,data=¸ê®Æ¦WºÙ)`¡A·f°tformula¨Ï¥Î
+- formulaªº¼¶¼g¤èªk¬°¡G**¨ÌÅÜ¶µ~¦ÛÅÜ¶µ1¡Ï¦ÛÅÜ¶µ2¡Ï**....
+- ¤ÀªR¤ÑªÇ¹«`¤ú¾¦ªø«×`»P`ºû¥L©RC¾¯¶q`ªºÃö«Y½d¨Ò
 
 ```r
 lm(len~dose,
@@ -140,42 +142,42 @@ Coefficients:
       7.423        9.764  
 ```
 
-len = `9.764` * dose `7.423`
+len = `9.764` * dose + `7.423`
 
 glm()
 ====================================
-- æ›´è¢«å»£æ³›ä½¿ç”¨çš„æ˜¯å»£ç¾©ç·šæ€§è¿´æ­¸æ¨¡å‹generalized linear models (glm)ï¼Œ`glm()`
-- ä½¿ç”¨æ–¹æ³•èˆ‡`lm()`é¡ä¼¼
-- åŒ…æ‹¬ç·šæ€§è¿´æ­¸æ¨¡å‹å’Œé‚è¼¯è¿´æ­¸æ¨¡å‹
-- å¦‚æœéœ€è¦ä¿®æ”¹é è¨­æ¨¡å‹ï¼Œå¯è¨­å®šfamilyåƒæ•¸ï¼š
-    - `family="gaussian"` ç·šæ€§æ¨¡å‹æ¨¡å‹
-    - `family="binomial"` é‚è¼¯è¿´æ­¸æ¨¡å‹
-    - `family="poisson"` åœç“¦æ¾è¿´æ­¸æ¨¡å‹
+- §ó³Q¼sªx¨Ï¥Îªº¬O¼s¸q½u©Ê°jÂk¼Ò«¬generalized linear models (glm)¡A`glm()`
+- ¨Ï¥Î¤èªk»P`lm()`Ãş¦ü
+- ¥]¬A½u©Ê°jÂk¼Ò«¬©MÅŞ¿è°jÂk¼Ò«¬
+- ¦pªG»İ­n­×§ï¹w³]¼Ò«¬¡A¥i³]©wfamily°Ñ¼Æ¡G
+    - `family="gaussian"` ½u©Ê¼Ò«¬¼Ò«¬
+    - `family="binomial"` ÅŞ¿è°jÂk¼Ò«¬
+    - `family="poisson"` ¤R¥ËªQ°jÂk¼Ò«¬
     
 Gaussian distribution
 ====================================
-Gaussian distributioné«˜æ–¯å‡½æ•¸æ˜¯`å¸¸æ…‹åˆ†å¸ƒ`çš„å¯†åº¦å‡½æ•¸
+Gaussian distribution°ª´µ¨ç¼Æ¬O`±`ºA¤À¥¬`ªº±K«×¨ç¼Æ
 
 ![plot of chunk unnamed-chunk-1](https://upload.wikimedia.org/wikipedia/commons/a/a9/Empirical_Rule.PNG)
 
 Binomial distribution
 ====================================
-Binomial distributionäºŒé …åˆ†å¸ƒæ˜¯`nå€‹ç¨ç«‹çš„æ˜¯/éè©¦é©—ä¸­æˆåŠŸçš„æ¬¡æ•¸`çš„é›¢æ•£æ©Ÿç‡åˆ†å¸ƒ
+Binomial distribution¤G¶µ¤À¥¬¬O`n­Ó¿W¥ßªº¬O/«D¸ÕÅç¤¤¦¨¥\ªº¦¸¼Æ`ªºÂ÷´²¾÷²v¤À¥¬
 ![plot of chunk unnamed-chunk-2](https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Pascal%27s_triangle%3B_binomial_distribution.svg/794px-Pascal%27s_triangle%3B_binomial_distribution.svg.png)
 
 Poisson distribution
 ====================================
-Poisson distribution`æ¬¡æ•¸`åˆ†ä½ˆï¼š
+Poisson distribution`¦¸¼Æ`¤À§G¡G
 
-- æŸä¸€æœå‹™è¨­æ–½åœ¨ä¸€å®šæ™‚é–“å…§å—åˆ°çš„æœå‹™è«‹æ±‚çš„æ¬¡æ•¸
-- å…¬è»Šç«™çš„å€™å®¢äººæ•¸
-- è‡ªç„¶ç½å®³ç™¼ç”Ÿçš„æ¬¡æ•¸
+- ¬Y¤@ªA°È³]¬I¦b¤@©w®É¶¡¤º¨ü¨ìªºªA°È½Ğ¨Dªº¦¸¼Æ
+- ¤½¨®¯¸ªº­Ô«È¤H¼Æ
+- ¦ÛµM¨a®`µo¥Íªº¦¸¼Æ
 
 ![plot of chunk unnamed-chunk-3](https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Poisson_pmf.svg/360px-Poisson_pmf.svg.png)
 
-å»£ç¾©ç·šæ€§è¿´æ­¸èˆ‡å¤©ç«ºé¼ çš„ç‰™é½’é•·åº¦
+¼s¸q½u©Ê°jÂk»P¤ÑªÇ¹«ªº¤ú¾¦ªø«×
 ====================================
-åˆ†æå¤©ç«ºé¼ `ç‰™é½’é•·åº¦`èˆ‡`ç¶­ä»–å‘½CåŠ‘é‡`ä»¥åŠ`Supplement type`çš„é—œä¿‚ç¯„ä¾‹
+¤ÀªR¤ÑªÇ¹«`¤ú¾¦ªø«×`»P`ºû¥L©RC¾¯¶q`¥H¤Î`Supplement type`ªºÃö«Y½d¨Ò
 
 ```r
 glm(len ~ supp+dose,
@@ -196,55 +198,59 @@ Residual Deviance: 1023 	AIC: 348.4
 ```
 len = `-3.700` * suppVC + `9.764` * dose + `9.272`
 
-è™›æ“¬è®Šé … Dummy Variable
+µêÀÀÅÜ¶µ Dummy Variable
 ====================================
-- `Supplement type`çš„è®Šé …è¢«è½‰ç‚º**è™›æ“¬è®Šé … Dummy Variable**
+- `Supplement type`ªºÅÜ¶µ³QÂà¬°**µêÀÀÅÜ¶µ Dummy Variable**
 - suppVC
-- å¦‚æœæ˜¯OJ(åŸºæº–é …)ï¼Œæœƒå¾—åˆ°ï¼š
-
+- ¦pªG¬OOJ(°ò·Ç¶µ)¡A·|±o¨ì¡G
   - suppVC=0
   
-ç·šæ€§è¿´æ­¸ç·´ç¿’
+½u©Ê°jÂk½m²ß
 ====================================
 type:alert
-- ç”¨[BostonHousing](https://archive.ics.uci.edu/ml/datasets/Housing)è³‡æ–™
-  - install.packages("mlbench")
-  - library(mlbench)
-  - data(BostonHousing)
-- ä½¿ç”¨crimã€taxã€disæ¬„ä½é æ¸¬medv(Median value of owner-occupied homes in $1000's)
-  - glm()å»£ç¾©ç·šæ€§è¿´æ­¸
+- ¥Î[BostonHousing](https://archive.ics.uci.edu/ml/datasets/Housing)¸ê®Æ
 
-ç·šæ€§è¿´æ­¸ç¸½çµ
+
+```r
+install.packages("mlbench")
+library(mlbench)
+data(BostonHousing)
+```
+
+- ¨Ï¥Îcrim¡Btax¡BdisÄæ¦ì¹w´úmedv(Median value of owner-occupied homes in $1000's)
+  - glm()¼s¸q½u©Ê°jÂk
+
+½u©Ê°jÂkÁ`µ²
 ====================================
-ç¸½çµä»¥ä¸Šï¼Œå¤šè®Šé‡ç·šæ€§è¿´æ­¸åˆ†ææœ‰ä¸‹åˆ—ç‰¹è‰²ï¼š
+Á`µ²¥H¤W¡A¦hÅÜ¶q½u©Ê°jÂk¤ÀªR¦³¤U¦C¯S¦â¡G
 
-- å‡è¨­ï¼šå„è®Šæ•¸ç›¸äº’ç¨ç«‹ï¼
-- è‹¥è‡ªè®Šé …Xæ˜¯é¡åˆ¥è®Šé …ï¼Œéœ€è¦å»ºç«‹`è™›æ“¬è®Šé …`
-- åœ¨Rè£¡ï¼Œ`é¡åˆ¥è®Šé …`è«‹è¨˜å¾—è½‰æˆfactorï¼ŒRæœƒè‡ªå‹•å»ºç«‹`è™›æ“¬è®Šé …`
-- ç”¨åœ¨`ä¾è®Šæ•¸ç‚ºé€£çºŒè®Šæ•¸`ï¼Œ`è‡ªè®Šæ•¸ç‚ºé€£çºŒè®Šæ•¸æˆ–è™›æ“¬è®Šæ•¸`çš„å ´åˆ
+- °²³]¡G¦UÅÜ¼Æ¬Û¤¬¿W¥ß¡I
+- ­Y¦ÛÅÜ¶µX¬OÃş§OÅÜ¶µ¡A»İ­n«Ø¥ß`µêÀÀÅÜ¶µ`
+- ¦bR¸Ì¡A`Ãş§OÅÜ¶µ`½Ğ°O±oÂà¦¨factor¡AR·|¦Û°Ê«Ø¥ß`µêÀÀÅÜ¶µ`
+- ¥Î¦b`¨ÌÅÜ¼Æ¬°³sÄòÅÜ¼Æ`¡A`¦ÛÅÜ¼Æ¬°³sÄòÅÜ¼Æ©ÎµêÀÀÅÜ¼Æ`ªº³õ¦X
 
 
-Logistic Regression ç¾…å‰æ–¯è¿´æ­¸
+Logistic Regression Ã¹¦N´µ°jÂk
 ====================================
 
-å¸¸ç”¨åœ¨`ä¾è®Šæ•¸ç‚ºäºŒå…ƒè®Šæ•¸ï¼ˆé0å³1ï¼‰`çš„å ´åˆï¼Œå¦‚ï¼š
-  - ç”Ÿç—…/æ²’ç”Ÿç—…
-  - éŒ„å–/ä¸éŒ„å–
-  - `family="binomial"` é‚è¼¯è¿´æ­¸æ¨¡å‹
+±`¥Î¦b`¨ÌÅÜ¼Æ¬°¤G¤¸ÅÜ¼Æ¡]«D0§Y1¡^`ªº³õ¦X¡A¦p¡G
+  - ¥Í¯f/¨S¥Í¯f
+  - ¿ı¨ú/¤£¿ı¨ú
+  - `family="binomial"` Ã¹¦N´µ°jÂk¼Ò«¬
 
-Logistic Regression ç¾…å‰æ–¯è¿´æ­¸
+Logistic Regression Ã¹¦N´µ°jÂk
 ====================================
-- å˜—è©¦å°‡Logistic Regression ç¾…å‰æ–¯è¿´æ­¸ç”¨åœ¨ç³–å°¿ç—…çš„è³‡æ–™
-- åš`å¾—ç³–å°¿ç—…èˆ‡å¦`èˆ‡`BMI`çš„ç¾…å‰æ–¯è¿´æ­¸è§€å¯Ÿ
+- ¹Á¸Õ±NLogistic Regression Ã¹¦N´µ°jÂk¥Î¦b¿}§¿¯fªº¸ê®Æ
 
 ```r
 library(mlbench)
 data("PimaIndiansDiabetes2")
+#¥h°£¦³¿òº|­Èªº¸ê®Æ
 PimaIndiansDiabetes2<-
   PimaIndiansDiabetes2[complete.cases(PimaIndiansDiabetes2),]
 ```
 
-åˆ†ææ˜¯å¦æœƒå¾—ç³–å°¿ç—…ï¼Ÿ
+¤ÀªR¬O§_±o¿}§¿¯f¡H
 ====================================
 
 ```r
@@ -260,8 +266,9 @@ head(PimaIndiansDiabetes2)
 |14 |        1|     189|       60|      23|     846| 30.1|    0.398|  59|pos      |
 |15 |        5|     166|       72|      19|     175| 25.8|    0.587|  51|pos      |
 
-åˆ†ææ˜¯å¦æœƒå¾—ç³–å°¿ç—…ï¼Ÿ
+¤ÀªR¬O§_±o¿}§¿¯f¡H
 ====================================
+- °µ`±o¿}§¿¯f»P§_`»P`Ãh¥¥`+`BMI`+`¦å¿}`+`triceps`ªºÃ¹¦N´µ°jÂkÆ[¹î
 
 ```r
 mylogit <- 
@@ -283,30 +290,36 @@ sum$coefficients
 |triceps     |  0.0189975|  0.0165837|  1.145551|          0.2519809|
 |mass        |  0.0635506|  0.0253800|  2.503965|          0.0122810|
 
-ç¾…å‰æ–¯è¿´æ­¸ç·´ç¿’
+Ã¹¦N´µ°jÂk½m²ß
 ====================================
 type:alert
-- ç”¨[PimaIndiansDiabetes2](https://archive.ics.uci.edu/ml/datasets/Pima+Indians+Diabetes)è³‡æ–™
-  - install.packages("mlbench")
-  - library(mlbench)
-  - data(PimaIndiansDiabetes2)
-  - PimaIndiansDiabetes2<-
+- ¥Î[PimaIndiansDiabetes2](https://archive.ics.uci.edu/ml/datasets/Pima+Indians+Diabetes)¸ê®Æ
+
+
+```r
+install.packages("mlbench")
+library(mlbench)
+data(PimaIndiansDiabetes2)
+PimaIndiansDiabetes2<-
   PimaIndiansDiabetes2[complete.cases(PimaIndiansDiabetes2),]
-- ä½¿ç”¨å…¨éƒ¨æ¬„ä½é æ¸¬diabetes
-  - glm()å»£ç¾©ç·šæ€§è¿´æ­¸
+```
+
+- ¨Ï¥Î¥ş³¡Äæ¦ì¹w´údiabetes
+  - diabetes ~ **.**
+  - glm()¼s¸q½u©Ê°jÂk
   - family = "binomial"
 
-æœ€ä½³æ¨¡å‹ç¯©é¸
+³Ì¨Î¼Ò«¬¿z¿ï
 ====================================
 
-åˆ°åº•è©²ç”¨å“ªå€‹æ¨¡å‹ä¾†é æ¸¬ï¼Œæœƒå¾—åˆ°æœ€æº–ç¢ºçš„çµæœï¼Ÿåœ¨è¿´æ­¸æ¨¡å‹ä¸­ï¼Œå¸¸ç”¨çš„åˆ¤æ–·æº–å‰‡åŒ…æ‹¬ï¼š
+¨ì©³¸Ó¥Î­ş­Ó¼Ò«¬¨Ó¹w´ú¡A¼Ò«¬°t¾A«×·|³Ì¦n¡H¦b°jÂk¼Ò«¬¤¤¡A±`¥Îªº§PÂ_·Ç«h¥]¬A¡G
 
-  - Akaikeâ€™s Information Criterion (AIC)
+  - Akaike¡¦s Information Criterion (AIC)
   - Bayesian Information Criterion (BIC)
 
 AIC
 ====================================
-AICå’ŒBICéƒ½æ˜¯æ•¸å€¼è¶Šå°è¶Šå¥½ï¼Œä»¥ä¸‹å»ºç«‹ä¸‰å€‹æ¨¡å‹ï¼Œä¸¦æ¯”è¼ƒå…¶AIC
+AIC©MBIC³£¬O¼Æ­È¶V¤p¶V¦n¡A¥H¤U«Ø¥ß¤T­Ó¼Ò«¬¡A¨Ã¤ñ¸û¨äAIC
 
 ```r
 OneVar<-glm(diabetes ~ mass,
@@ -331,11 +344,11 @@ c(OneVar$aic,TwoVar$aic,ThreeVar$aic)
 [1] 473.0310 470.5486 377.4528
 ```
 
-æ‰€æœ‰åƒæ•¸éƒ½æœ‰ç”¨å—ï¼Ÿ
+©Ò¦³°Ñ¼Æ³£¦³¥Î¶Ü¡H
 ====================================
-- åœ¨å»ºç«‹è¿´æ­¸æ¨¡å‹æ™‚ï¼Œå¸¸æœƒé‡åˆ°çš„å•é¡Œï¼šåˆ°åº•è©²æ”¾å¤šå°‘åƒæ•¸ï¼Ÿ
-- æ‰€æœ‰åƒæ•¸éƒ½æœ‰ç”¨å—ï¼Ÿ
-- è—‰ç”±è§€å¯Ÿcoefficientsä¾†åˆ¤æ–·åƒæ•¸åœ¨æ¨¡å‹ä¸­çš„"å¯¦ç”¨ç¨‹åº¦"
+- ¦b«Ø¥ß°jÂk¼Ò«¬®É¡A±`·|¹J¨ìªº°İÃD¡G¨ì©³¸Ó©ñ¦h¤Ö°Ñ¼Æ¡H
+- ©Ò¦³°Ñ¼Æ³£¦³¥Î¶Ü¡H
+- ÂÇ¥ÑÆ[¹îcoefficients¨Ó§PÂ_°Ñ¼Æ¦b¼Ò«¬¤¤ªº"¹ê¥Îµ{«×"
 
 ```r
 sum2<-summary(TwoVar)
@@ -348,7 +361,7 @@ sum2$coefficients
 |triceps     |  0.0298567|  0.0141633|  2.108036|          0.0350278|
 |mass        |  0.0574192|  0.0215457|  2.664997|          0.0076989|
 
-æ‰€æœ‰åƒæ•¸éƒ½æœ‰ç”¨å—ï¼Ÿ
+©Ò¦³°Ñ¼Æ³£¦³¥Î¶Ü¡H
 ====================================
 
 ```r
@@ -363,19 +376,19 @@ sum3$coefficients
 |triceps     |  0.0266201|  0.0162911|  1.634024|          0.1022537|
 |mass        |  0.0469444|  0.0245083|  1.915454|          0.0554347|
 
-Decision Trees æ±ºç­–æ¨¹
+Decision Trees ¨Mµ¦¾ğ
 ====================================
-- åœ¨`æ¨¹ç‹€ç›®éŒ„`ä¸­å»ºç«‹ä¸€ç³»åˆ—åˆ†å‰²ï¼Œä»¥å»ºç«‹æ¨¡å‹
-- é€™äº›åˆ†å‰²æœƒè¡¨ç¤ºæˆ`ã€Œç¯€é»ã€(Node)`
-- æ¯æ¬¡ç™¼ç¾è¼¸å…¥è³‡æ–™è¡Œèˆ‡å¯é æ¸¬è³‡æ–™è¡Œæœ‰æ˜é¡¯åœ°ç›¸äº’é—œè¯æ™‚ï¼Œæ­¤æ¼”ç®—æ³•å°±æœƒåœ¨æ¨¡å‹ä¸­åŠ å…¥ä¸€å€‹`ç¯€é»`
-- æ¼”ç®—æ³•æ±ºå®šåˆ†å²”çš„æ–¹å¼ä¸åŒ
+- ¦b`¾ğª¬¥Ø¿ı`¤¤«Ø¥ß¤@¨t¦C¤À³Î¡A¥H«Ø¥ß¼Ò«¬
+- ³o¨Ç¤À³Î·|ªí¥Ü¦¨`¡u¸`ÂI¡v(Node)`
+- ¨C¦¸µo²{¿é¤J¸ê®Æ¦æ»P¥i¹w´ú¸ê®Æ¦æ¦³©úÅã¦a¬Û¤¬ÃöÁp®É¡A¦¹ºtºâªk´N·|¦b¼Ò«¬¤¤¥[¤J¤@­Ó`¸`ÂI`
+- ºtºâªk¨M©w¤À§Ãªº¤è¦¡¤£¦P
 
-![plot of chunk unnamed-chunk-7](05DataMining-figure/unnamed-chunk-7-1.png)
+![plot of chunk unnamed-chunk-9](05DataMining-figure/unnamed-chunk-9-1.png)
 
 Classification And Regression Tree (CART)
 ====================================
-- å¸¸è¦‹çš„Classification And Regression Tree (CART)
-- ä½¿ç”¨å‰é ˆå…ˆå®‰è£`rpart` packages
+- ±`¨£ªºClassification And Regression Tree (CART)
+- ¨Ï¥Î«e¶·¥ı¦w¸Ë`rpart` packages
 
 
 ```r
@@ -384,9 +397,9 @@ install.packages("rpart")
 
 CART
 ====================================
-- å˜—è©¦ç”¨ç”¨pregnant+glucose+triceps+massä¾†åˆ¤æ–·æ˜¯å¦å¾—ç³–å°¿ç—…
-- å»ºç«‹æ±ºç­–æ¨¹çš„å‡½æ•¸ç‚º`rpart()`
-- ä½¿ç”¨æ–¹å¼ç‚º`rpart(formula, data)`
+- ¹Á¸Õ¥Î¥Îpregnant+glucose+triceps+mass¨Ó§PÂ_¬O§_±o¿}§¿¯f
+- «Ø¥ß¨Mµ¦¾ğªº¨ç¼Æ¬°`rpart()`
+- ¨Ï¥Î¤è¦¡¬°`rpart(formula, data)`
 
 ```r
 library(rpart)
@@ -424,19 +437,19 @@ CART
 ====================================
 
 ```r
-par(mfrow=c(1,1), mar = rep(1,4)) #ä¸‹,å·¦,ä¸Š,å³
+par(mfrow=c(1,1), mar = rep(1,4)) #¤U,¥ª,¤W,¥k
 plot(DT)
 text(DT, use.n=F, all=F, cex=1)
 ```
 
 ![plot of chunk rpart3](05DataMining-figure/rpart3-1.png)
 
-æ±ºç­–æ¨¹åœ–
+¨Mµ¦¾ğ¹Ï
 ====================================
-æ”¹ç”¨`rpart.plot` package è£¡é¢çš„`prp()`
+§ï¥Î`rpart.plot` package ¸Ì­±ªº`prp()`
 
 ```r
-#ç¬¬ä¸€æ¬¡ä½¿ç”¨å‰é ˆå…ˆå®‰è£
+#²Ä¤@¦¸¨Ï¥Î«e¶·¥ı¦w¸Ë
 install.packages("rpart.plot") 
 ```
 
@@ -447,65 +460,90 @@ prp(DT)
 
 ![plot of chunk rpart4](05DataMining-figure/rpart4-1.png)
 
-æ±ºç­–æ¨¹ ç¯€é»
+¨Mµ¦¾ğ ¸`ÂI
 ====================================
-æ±ºç­–æ¨¹æ¼”ç®—æ³•æ±ºå®š`ç¯€é»`çš„æ–¹å¼å¦‚ä¸‹ï¼š
+¨Mµ¦¾ğºtºâªk¨M©w`¸`ÂI`ªº¤è¦¡¦p¤U¡G
 
 - Gini impurity
 - Information gain
 - Variance reduction
 
-ç´°ç¯€å¯åƒè€ƒ[ç¶­åŸºç™¾ç§‘](https://en.wikipedia.org/wiki/Decision_tree_learning)
+²Ó¸`¥i°Ñ¦Ò[ºû°ò¦Ê¬ì](https://en.wikipedia.org/wiki/Decision_tree_learning)
 
 
-æ±ºç­–æ¨¹ ç·´ç¿’
+¨Mµ¦¾ğ ½m²ß
 ====================================
 type:alert
-- ç”¨[PimaIndiansDiabetes2](https://archive.ics.uci.edu/ml/datasets/Pima+Indians+Diabetes)è³‡æ–™
-  - install.packages("mlbench")
-  - library(mlbench)
-  - data(PimaIndiansDiabetes2)
-- ä½¿ç”¨æ‰€æœ‰æ¬„ä½é æ¸¬diabetes
+- ¥Î[PimaIndiansDiabetes2](https://archive.ics.uci.edu/ml/datasets/Pima+Indians+Diabetes)¸ê®Æ
+
+
+```r
+install.packages("mlbench")
+library(mlbench)
+data(PimaIndiansDiabetes2)
+PimaIndiansDiabetes2<-
+  PimaIndiansDiabetes2[complete.cases(PimaIndiansDiabetes2),]
+```
+
+- ¨Ï¥Î¨Mµ¦¾ğºtºâªk¡A¨Ã¥Î©Ò¦³Äæ¦ì¹w´údiabetes
   - diabetes~.
-- ä½¿ç”¨rpart.plotå¥—ä»¶ç•«å‡ºæ±ºç­–æ¨¹
+- ¨Ï¥Îrpart.plot®M¥óµe¥X¨Mµ¦¾ğ
   - prp()
 
 
-æ¨¡å‹é©—è­‰
+¼Ò«¬ÅçÃÒ
 ====================================
-- åœ¨å®Œæˆæ¨¡å‹è¨“ç·´å¾Œï¼Œç‚ºäº†é©—è­‰æ¨¡å‹è¨“ç·´çš„å¥½ä¸å¥½ï¼Œéœ€è¦ç”¨ä¸€çµ„**ç¨ç«‹**çš„æ¸¬è©¦è³‡æ–™ï¼Œä¾†åšæ¨¡å‹çš„é©—è­‰
-- åœ¨è¨“ç·´æ¨¡å‹å‰ï¼Œå¿…é ˆç‰¹åˆ¥ç•™æ„æ˜¯å¦æœ‰ä¿ç•™ä¸€ä»½**ç¨ç«‹çš„è³‡æ–™**ï¼Œä¸¦ç¢ºä¿åœ¨è¨“ç·´æ¨¡å‹æ™‚éƒ½ä¸ç”¨åˆ°æ­¤ç¨ç«‹è³‡æ–™é›†ã€‚
+- ¦b§¹¦¨¼Ò«¬°V½m«á¡A¬°¤FÅçÃÒ¼Ò«¬°V½mªº¦n¤£¦n¡A»İ­n¥Î¤@²Õ**¿W¥ß**ªº´ú¸Õ¸ê®Æ¡A¨Ó°µ¼Ò«¬ªºÅçÃÒ
+- ¦b°V½m¼Ò«¬«e¡A¥²¶·¯S§O¯d·N¬O§_¦³«O¯d¤@¥÷**¿W¥ßªº¸ê®Æ**¡A¨Ã½T«O¦b°V½m¼Ò«¬®É³£¤£¥Î¨ì¦¹¿W¥ß¸ê®Æ¶°¡C
 
-å› æ­¤ï¼Œè³‡æ–™é›†å¯åˆ†ç‚ºä»¥ä¸‹å…©ç¨®ï¼š
+¦]¦¹¡A¸ê®Æ¶°¥i¤À¬°¥H¤U¨âºØ¡G
 
-- **è¨“ç·´çµ„** Training set, Development set: è®“æ¼”ç®—æ³•`å­¸`åˆ°`çŸ¥è­˜`
-- **æ¸¬è©¦çµ„** Test set, Validation set: é©—è­‰`å­¸`çš„æ€éº¼æ¨£
+- **°V½m²Õ** Training set, Development set: Åıºtºâªk`¾Ç`¨ì`ª¾ÃÑ`
+- **´ú¸Õ²Õ** Test set, Validation set: ÅçÃÒ`¾Ç`ªº«ç»ò¼Ë
 
-æ¨¡å‹é©—è­‰
+¼Ò«¬ÅçÃÒ
 ====================================
-- Training setå’ŒTest seté€šå¸¸æœƒæ¯”ä¾‹åˆ†é…
-  - å¦‚2/3çš„è³‡æ–™è¨­ç‚º`Training set`
-  - å‰©ä¸‹çš„1/3åšé©—è­‰`Test set`
-- ä»¥ä¸‹åœ–çš„ç›£ç£å¼å­¸ç¿’æµç¨‹åœ–ç‚ºä¾‹ï¼Œå¯ä»¥æ³¨æ„åˆ°ç¶ è‰²ç®­é ­çš„è³‡æ–™é›†åœ¨è¨“ç·´éç¨‹ä¸­å¾æœªè¢«ä½¿ç”¨ã€‚
+- Training set©MTest set³q±`·|¤ñ¨Ò¤À°t
+  - ¦p2/3ªº¸ê®Æ³]¬°`Training set`
+  - ³Ñ¤Uªº1/3°µÅçÃÒ`Test set`
+- ¥H¤U¹ÏªººÊ·ş¦¡¾Ç²ß¬yµ{¹Ï¬°¨Ò¡A¥i¥Hª`·N¨ìºñ¦â½bÀYªº¸ê®Æ¶°¦b°V½m¹Lµ{¤¤±q¥¼³Q¨Ï¥Î¡C
 
-æ¨¡å‹é©—è­‰
+
+¼Ò«¬ÅçÃÒ
 ====================================
-![plot of chunk unnamed-chunk-8](figures/SupervisedLearning.png)
+![plot of chunk unnamed-chunk-11](figures/traintest1.PNG)
 
-æ¨¡å‹é©—è­‰
+¼Ò«¬ÅçÃÒ
 ====================================
-- ä»¥Training setä¾†`é¸çœ‹èµ·ä¾†æœ€å¥½çš„æ¨¡å‹`
-- ç”¨Test setä¾†`é©—è­‰æ¨¡å‹æ˜¯ä¸æ˜¯çœŸçš„å¾ˆå¥½`
-- æƒ³åƒ.....è¨“ç·´å‡ºä¾†é¡Œåº«ç­”å¾—å¥½çš„å­¸ç”Ÿï¼Œå¯«åˆ°æ–°é¡Œç›®ä¸ä¸€å®šæœƒå¯«ï¼ï¼Ÿ
-- è¨“ç·´æ¨¡å‹æ™‚ï¼Œåªèƒ½çœ‹Training setï¼Œç”¨Training setä¾†é¸ä¸€å€‹æœ€å¥½çš„æ¨¡å‹
-- è¨“ç·´æ¨¡å‹æ™‚ï¼Œä¸èƒ½å·çœ‹Test setï¼Œæ‰æ˜¯çœŸæ­£çš„é©—è­‰
+![plot of chunk unnamed-chunk-12](figures/traintest2.PNG)
+
+¼Ò«¬ÅçÃÒ
+====================================
+![plot of chunk unnamed-chunk-13](figures/traintest3.PNG)
+
+¼Ò«¬ÅçÃÒ
+====================================
+![plot of chunk unnamed-chunk-14](figures/traintest4.PNG)
 
 
-Regression è¿´æ­¸é©—è­‰
+¼Ò«¬ÅçÃÒ
+====================================
+- ¥HTraining set¨Ó`¿ï¬İ°_¨Ó³Ì¦nªº¼Ò«¬`
+- ¥ÎTest set¨Ó`ÅçÃÒ¼Ò«¬¬O¤£¬O¯uªº«Ü¦n`
+
+- °V½m¼Ò«¬®É¡A¥u¯à¬İTraining set¡A¥ÎTraining set¨Ó¿ï¤@­Ó³Ì¦nªº¼Ò«¬
+- °V½m¼Ò«¬®É¡A¤£¯à°½¬İTest set¡A¤~¬O¯u¥¿ªºÅçÃÒ
+
+
+¼Ò«¬ÅçÃÒ
+====================================
+![plot of chunk unnamed-chunk-15](figures/SupervisedLearning.png)
+
+Regression °jÂkÅçÃÒ
 ====================================
 
-- ä»¥PimaIndiansDiabetesè³‡æ–™ç‚ºä¾‹ï¼Œé¦–å…ˆå…ˆå°‡è³‡æ–™è®€å…¥
-- ç•¶ç­”æ¡ˆæœ‰æ­£åå…©é¢æ™‚ï¼Œå»ºè­°`Level 2 æ”¾æ­£é¢ç­”æ¡ˆ`-->æœ‰ç—…/éŒ„å–...
+- ¥HPimaIndiansDiabetes¸ê®Æ¬°¨Ò¡A­º¥ı¥ı±N¸ê®ÆÅª¤J
+- ·íµª®×¦³¥¿¤Ï¨â­±®É¡A«ØÄ³`Level 2 ©ñ¥¿­±µª®×`-->¦³¯f/¿ı¨ú...
 
 ```r
 library(mlbench)
@@ -520,44 +558,44 @@ head(PD2$diabetes)
 Levels: neg pos
 ```
 
-Regression è¿´æ­¸é©—è­‰ï¼šè³‡æ–™åˆ†çµ„
+Regression °jÂkÅçÃÒ¡G¸ê®Æ¤À²Õ
 ====================================
-ç‚ºåˆ†å‡ºè¨“ç·´çµ„èˆ‡æ¸¬è©¦çµ„ï¼Œéœ€ä½¿ç”¨éš¨æ©ŸæŠ½æ¨£çš„æ–¹å¼
+¬°¤À¥X°V½m²Õ»P´ú¸Õ²Õ¡A»İ¨Ï¥ÎÀH¾÷©â¼Ëªº¤è¦¡
 
 ```r
-sample(1:10,3) # å¾1åˆ°10ï¼Œéš¨æ©Ÿå–ä¸‰å€‹æ•¸å­—
+sample(1:10,3) # ±q1¨ì10¡AÀH¾÷¨ú¤T­Ó¼Æ¦r
 ```
 
 ```
-[1] 8 5 9
+[1] 4 3 5
 ```
 
 ```r
-#å¾ç¬¬ä¸€åˆ—åˆ°æœ€å¾Œä¸€åˆ—ï¼Œéš¨æ©Ÿå–1/3åˆ—æ•¸
+#±q²Ä¤@¦C¨ì³Ì«á¤@¦C¡AÀH¾÷¨ú1/3¦C¼Æ
 sample(1:nrow(PD2),nrow(PD2)/3) 
 ```
 
 ```
-  [1]  22  18  52 283 385 114 392 249 150  96 162 115 365 194 153  13 163
- [18] 239 338 222 197 271 256 267 156 209 251 246 363 272 361 141 317 351
- [35] 230 263 180  86 234 216  50 238  77 335 273 126 235 326 146   1 329
- [52] 308 199 368  30  58 381 275 257 205 204  15 105  39  20 217 145   2
- [69] 177 277 303 189 266  70 195   4 152 108 282 183 130 240 121 125 306
- [86] 323 112  49 280 119  46 345 167 316 255 259 383   6 236 140 171 389
-[103] 242 245 172  51 372 213 136  60 274 100 377  88  76  98 390 289  95
-[120] 198 262  69  68 219  48 102 264 155 374 313
+  [1] 134  14 150 121 158  27 315 370  10 344 289 204 176 323 278 140 245
+ [18] 237 196 145 336  93  42 166 262 205 290 239 131 125 266 157 160  46
+ [35] 220 342 189  16 297 332 378 296 282 358 346  65 231 209 111  95 133
+ [52] 359 165 287 351 339 253 313  17 218 185 193 367 347  54 219 210 100
+ [69]  75 159 271 153 124 214 337 343  91 368 369 291 188 103 246 232 241
+ [86] 361 303  44 350 331  41 283 338 168 280 171 257 102 108 147 169 116
+[103] 211  15 389 226 286 199 340 162 330 137  73 222 234 184 104 224   6
+[120] 173 272 192 109 270  31 300 352 128 288  92
 ```
 
-Regression è¿´æ­¸é©—è­‰ï¼šè³‡æ–™åˆ†çµ„
+Regression °jÂkÅçÃÒ¡G¸ê®Æ¤À²Õ
 ====================================
-ä½¿ç”¨éš¨æ©ŸæŠ½æ¨£æ³•ï¼Œé¸å‡º1/3çš„å…ƒç´ ä½ç½®ï¼ŒæŠŠç—…äººçš„è³‡æ–™åˆ†æˆTraining å’Œ Test set
+¨Ï¥ÎÀH¾÷©â¼Ëªk¡A¿ï¥X1/3ªº¤¸¯À¦ì¸m¡A§â¯f¤Hªº¸ê®Æ¤À¦¨Training ©M Test set
 
 ```r
-PD2$Test<-F #æ–°å¢ä¸€å€‹åƒæ•¸ç´€éŒ„åˆ†çµ„
-#éš¨æ©Ÿå–1/3ç•¶Test set
+PD2$Test<-F #·s¼W¤@­Ó°Ñ¼Æ¬ö¿ı¤À²Õ
+#ÀH¾÷¨ú1/3·íTest set
 PD2[sample(1:nrow(PD2),
-                            nrow(PD2)/3),]$Test<-T
-# Training set : Test setç—…äººæ•¸
+           nrow(PD2)/3),]$Test<-T
+# Training set : Test set¯f¤H¼Æ
 c(sum(PD2$Test==F),
   sum(PD2$Test==T))
 ```
@@ -566,9 +604,9 @@ c(sum(PD2$Test==F),
 [1] 262 130
 ```
 
-Regression è¿´æ­¸é©—è­‰ï¼šæ¨¡å‹è¨“ç·´
+Regression °jÂkÅçÃÒ¡G¼Ò«¬°V½m
 ====================================
-ä¸¦ç”¨è¨“ç·´çµ„çš„è³‡æ–™ï¼ˆPD2$Test==Fï¼‰ï¼Œè¨“ç·´ä¸€å€‹å¤šè®Šæ•¸ç¾…å‰æ–¯è¿´æ­¸æ¨¡å‹
+¨Ã¥Î°V½m²Õªº¸ê®Æ¡]PD2$Test==F¡^¡A°V½m¤@­Ó¦hÅÜ¼ÆÃ¹¦N´µ°jÂk¼Ò«¬
 
 ```r
 fit<-glm(diabetes~.,
@@ -579,25 +617,25 @@ summary(fit)$coefficients
 
 ```
                  Estimate  Std. Error    z value     Pr(>|z|)
-(Intercept) -9.8358240904 1.511945559 -6.5054089 7.748233e-11
-pregnant     0.1346928712 0.070097876  1.9214972 5.466906e-02
-glucose      0.0378558050 0.006908898  5.4792827 4.270537e-08
-pressure     0.0022857069 0.016202086  0.1410749 8.878108e-01
-triceps      0.0102662787 0.020416511  0.5028420 6.150754e-01
-insulin      0.0009412607 0.001658360  0.5675854 5.703166e-01
-mass         0.0575557253 0.034311246  1.6774595 9.345266e-02
-pedigree     1.3734743614 0.544190134  2.5238869 1.160653e-02
-age          0.0128118772 0.020966099  0.6110759 5.411493e-01
+(Intercept) -10.016523913 1.448643879 -6.9144143 4.698004e-12
+pregnant      0.096983449 0.071464122  1.3570929 1.747517e-01
+glucose       0.041142145 0.006850398  6.0058038 1.903863e-09
+pressure     -0.004148344 0.014798056 -0.2803303 7.792241e-01
+triceps       0.019917547 0.020862465  0.9547073 3.397257e-01
+insulin      -0.002105727 0.001596001 -1.3193766 1.870432e-01
+mass          0.061880842 0.033564590  1.8436347 6.523640e-02
+pedigree      1.016508125 0.515786814  1.9707912 4.874776e-02
+age           0.033967061 0.025600476  1.3268136 1.845703e-01
 ```
 
-Regression è¿´æ­¸é©—è­‰ï¼šé€æ­¥é¸æ“‡æ¨¡å‹
+Regression °jÂkÅçÃÒ¡G³v¨B¿ï¾Ü¼Ò«¬
 ====================================
-é€æ­¥é¸æ“‡æ¨¡å‹ stepwise å¾Œé€€å­¸ç¿’ï¼šä¸€é–‹å§‹å…ˆå°‡æ‰€æœ‰åƒæ•¸åŠ åˆ°æ¨¡å‹è£¡ï¼Œå†ä¸€å€‹ä¸€å€‹æ‹¿æ‰
+³v¨B¿ï¾Ü¼Ò«¬ stepwise «á°h¾Ç²ß¡G¤@¶}©l¥ı±N©Ò¦³°Ñ¼Æ¥[¨ì¼Ò«¬¸Ì¡A¦A¤@­Ó¤@­Ó®³±¼
 
 ```r
 library(MASS)
-##æ ¹æ“šAICï¼Œåšé€æ­¥é¸æ“‡, é è¨­å€’é€€å­¸ç¿’ direction = "backward"
-##trace=FALSE: ä¸è¦é¡¯ç¤ºæ­¥é©Ÿ
+##®Ú¾ÚAIC¡A°µ³v¨B¿ï¾Ü, ¹w³]­Ë°h¾Ç²ß direction = "backward"
+##trace=FALSE: ¤£­nÅã¥Ü¨BÆJ
 finalModel_B<-
     stepAIC(fit,
             direction = "backward",
@@ -606,20 +644,21 @@ summary(finalModel_B)$coefficients
 ```
 
 ```
-               Estimate Std. Error   z value     Pr(>|z|)
-(Intercept) -9.66210612 1.32803306 -7.275501 3.451366e-13
-pregnant     0.16897340 0.05384510  3.138139 1.700242e-03
-glucose      0.04020468 0.00609425  6.597149 4.191388e-11
-mass         0.07000396 0.02534832  2.761680 5.750479e-03
-pedigree     1.43690312 0.53907976  2.665474 7.687986e-03
+               Estimate  Std. Error   z value     Pr(>|z|)
+(Intercept) -9.80735378 1.300682833 -7.540158 4.694032e-14
+pregnant     0.09848888 0.069893331  1.409131 1.587963e-01
+glucose      0.03685605 0.005974444  6.168951 6.874438e-10
+mass         0.06987270 0.025043480  2.790056 5.269901e-03
+pedigree     0.98399595 0.508322422  1.935771 5.289572e-02
+age          0.03514935 0.024271680  1.448163 1.475715e-01
 ```
 
-Regression è¿´æ­¸é©—è­‰ï¼šé€æ­¥é¸æ“‡æ¨¡å‹
+Regression °jÂkÅçÃÒ¡G³v¨B¿ï¾Ü¼Ò«¬
 ====================================
-é€æ­¥é¸æ“‡æ¨¡å‹ stepwise é›™å‘å­¸ç¿’ï¼šåƒæ•¸åŠ åŠ æ¸›æ¸›
+³v¨B¿ï¾Ü¼Ò«¬ stepwise Âù¦V¾Ç²ß¡G°Ñ¼Æ¥[¥[´î´î
 
 ```r
-##æ ¹æ“šAICï¼Œåšé€æ­¥é¸æ“‡, é›™å‘å­¸ç¿’ direction = "both"
+##®Ú¾ÚAIC¡A°µ³v¨B¿ï¾Ü, Âù¦V¾Ç²ß direction = "both"
 finalModel_Both<-
     stepAIC(fit,
             direction = "both",
@@ -628,78 +667,100 @@ summary(finalModel_Both)$coefficients
 ```
 
 ```
-               Estimate Std. Error   z value     Pr(>|z|)
-(Intercept) -9.66210612 1.32803306 -7.275501 3.451366e-13
-pregnant     0.16897340 0.05384510  3.138139 1.700242e-03
-glucose      0.04020468 0.00609425  6.597149 4.191388e-11
-mass         0.07000396 0.02534832  2.761680 5.750479e-03
-pedigree     1.43690312 0.53907976  2.665474 7.687986e-03
+               Estimate  Std. Error   z value     Pr(>|z|)
+(Intercept) -9.80735378 1.300682833 -7.540158 4.694032e-14
+pregnant     0.09848888 0.069893331  1.409131 1.587963e-01
+glucose      0.03685605 0.005974444  6.168951 6.874438e-10
+mass         0.06987270 0.025043480  2.790056 5.269901e-03
+pedigree     0.98399595 0.508322422  1.935771 5.289572e-02
+age          0.03514935 0.024271680  1.448163 1.475715e-01
 ```
 
-Regression è¿´æ­¸é©—è­‰ï¼šæ¨¡å‹é©—è­‰
+Regression °jÂkÅçÃÒ¡G¼Ò«¬ÅçÃÒ
 ====================================
-- ç”¨Test setä¾†è©•ä¼°æ¨¡å‹å¥½ä¸å¥½
-- ä½¿ç”¨predictå‡½æ•¸ï¼Œå°‡æ¸¬è©¦çµ„è³‡æ–™æ”¾å…¥é æ¸¬æ¨¡å‹ä¸­
+- ¥ÎTest set¨Óµû¦ô¼Ò«¬¦n¤£¦n
+- ¨Ï¥Îpredict¨ç¼Æ¡A±N´ú¸Õ²Õ¸ê®Æ©ñ¤J¹w´ú¼Ò«¬¤¤
+  - type = "response": y¬° 1 ªº¾÷²v
+- ±N¹wµ²ªGpredictPoint°µªì¨BÂà´«¡A>0.5ªºÂà´«¬°"pos"¡A¥Nªí¦³±o¿}§¿¯f¡A¨ÃÂà´«¦¨factor
+  - levels=c("pos","neg")¡A±N¥¿­±(¦³¯f/¦³´_µo)³]©w¬°level 2¡A¤è«K¸ÑÅª
 
 ```r
 predictPoint<-
     predict(finalModel_Both,
             PD2[PD2$Test==T,],
             type = "response")
-DMAns<-factor(ifelse(predictPoint>0.5,1,0),
-                 levels=c(0,1))
+DMAns<-factor(ifelse(predictPoint>0.5,"pos","neg"),
+                 levels=c("pos","neg"))
+head(DMAns)
+```
+
+```
+  4  14  15  28  40  51 
+neg pos neg neg pos neg 
+Levels: pos neg
+```
+
+Regression °jÂkÅçÃÒ¡G¼Ò«¬ÅçÃÒ
+====================================
+- ¥ÎTest set¨Óµû¦ô¼Ò«¬¦n¤£¦n
+- ¨Ï¥Îpredict¨ç¼Æ¡A±N´ú¸Õ²Õ¸ê®Æ©ñ¤J¹w´ú¼Ò«¬¤¤
+  - type = "response": y¬° 1 ªº¾÷²v
+- ±N¹wµ²ªGpredictPoint°µªì¨BÂà´«¡A>0.5ªºÂà´«¬°"1"¡A¥Nªí¦³±o¿}§¿¯f¡A¨ÃÂà´«¦¨factor
+  - levels=c(0,1)¡A±N¥¿­±(¦³¯f/¦³´_µo)³]©w¬°level 2¡A¤è«K¸ÑÅª
+
+```r
 table(x=DMAns,
     y=PD2[PD2$Test==T,"diabetes"]) 
 ```
 
 ```
-   y
-x   neg pos
-  0  75  22
-  1   9  24
+     y
+x     neg pos
+  pos   6  28
+  neg  73  23
 ```
 
-Regression è¿´æ­¸é©—è­‰ï¼šæ¨¡å‹é©—è­‰
+Regression °jÂkÅçÃÒ¡G¼Ò«¬ÅçÃÒ
 ====================================
-- ç”¨Test setä¾†è©•ä¼°æ¨¡å‹å¥½ä¸å¥½
-- ä½¿ç”¨predictå‡½æ•¸ï¼Œå°‡æ¸¬è©¦çµ„è³‡æ–™æ”¾å…¥é æ¸¬æ¨¡å‹ä¸­
+- ¥ÎTest set¨Óµû¦ô¼Ò«¬¦n¤£¦n
+- ¨Ï¥Îpredict¨ç¼Æ¡A±N´ú¸Õ²Õ¸ê®Æ©ñ¤J¹w´ú¼Ò«¬¤¤
 
 ```r
-plot(x=predictPoint,
-     y=PD2[PD2$Test==T,"diabetes"])
+plot(x=PD2[PD2$Test==T,"diabetes"],
+     y=predictPoint)
 ```
 
-![plot of chunk unnamed-chunk-16](05DataMining-figure/unnamed-chunk-16-1.png)
+![plot of chunk unnamed-chunk-24](05DataMining-figure/unnamed-chunk-24-1.png)
 
 
-æ•ˆèƒ½æŒ‡æ¨™
+®Ä¯à«ü¼Ğ
 ====================================
-ç•¶ç­”æ¡ˆæ˜¯äºŒå…ƒæ™‚ï¼šæ•ˆèƒ½æŒ‡æ¨™
+·íµª®×¬O¤G¤¸®É¡G
 
-- Sensitivity æ•æ„Ÿæ€§
-- Specificity ç‰¹ç•°æ€§
-- Positive Predictive Value (PPV) é™½æ€§é æ¸¬å€¼
-- Negative Predictive Value (NPV) é™°æ€§é æ¸¬å€¼
+- Sensitivity ±Ó·P©Ê
+- Specificity ¯S²§©Ê
+- Positive Predictive Value (PPV) ¶§©Ê¹w´ú­È
+- Negative Predictive Value (NPV) ³±©Ê¹w´ú­È
 
 
-æ•ˆèƒ½æŒ‡æ¨™åè©è§£é‡‹
+®Ä¯à«ü¼Ğ¦Wµü¸ÑÄÀ
 ====================================
-![plot of chunk unnamed-chunk-17](figures/para.png)
-- TP: æœ‰ç—…ä¸”é æ¸¬ä¹Ÿæœ‰ç—…    FP: æ²’ç—…ä½†æ˜¯é æ¸¬æœ‰ç—…
-- TN: æ²’ç—…ä¸”é æ¸¬ä¹Ÿæ²’ç—…    FN: æœ‰ç—…ä½†é æ¸¬æ²’ç—…
+![plot of chunk unnamed-chunk-25](figures/para.png)
+- TP: ¦³¯f¥B¹w´ú¤]¦³¯f    FP: ¨S¯f¦ı¬O¹w´ú¦³¯f
+- TN: ¨S¯f¥B¹w´ú¤]¨S¯f    FN: ¦³¯f¦ı¹w´ú¨S¯f
 
-æ•ˆèƒ½æŒ‡æ¨™å…¬å¼
+®Ä¯à«ü¼Ğ¤½¦¡
 ====================================
-ç•¶ç­”æ¡ˆæ˜¯äºŒå…ƒæ™‚ï¼šæ•ˆèƒ½æŒ‡æ¨™å…¬å¼
+·íµª®×¬O¤G¤¸¥B¿é¥X¤]¬°¤G¤¸®É¡G®Ä¯à«ü¼Ğ¤½¦¡
  
-- Sensitivity æ•æ„Ÿæ€§ï¼šæ‰€æœ‰`çœŸçš„æœ‰ç—…`çš„äººï¼Œè¢«`é æ¸¬æœ‰ç—…`çš„æ¯”ä¾‹
-- Specificity ç‰¹ç•°æ€§ï¼šæ‰€æœ‰`çœŸçš„æ²’ç—…`çš„äººï¼Œè¢«`é æ¸¬æ²’ç—…`çš„æ¯”ä¾‹
-- Positive Predictive Value (PPV) é™½æ€§é æ¸¬å€¼ï¼šæ‰€æœ‰è¢«`é æ¸¬æœ‰ç—…`çš„äººï¼Œ`çœŸçš„æœ‰ç—…`çš„æ¯”ä¾‹
-- Negative Predictive Value (NPV) é™°æ€§é æ¸¬å€¼ï¼šæ‰€æœ‰è¢«`é æ¸¬æ²’ç—…`çš„äººï¼Œ`çœŸçš„æ²’ç—…`çš„æ¯”ä¾‹
+- Sensitivity ±Ó·P©Ê¡G©Ò¦³`¯uªº¦³¯f`ªº¤H¡A³Q`¹w´ú¦³¯f`ªº¤ñ¨Ò
+- Specificity ¯S²§©Ê¡G©Ò¦³`¯uªº¨S¯f`ªº¤H¡A³Q`¹w´ú¨S¯f`ªº¤ñ¨Ò
+- Positive Predictive Value (PPV) ¶§©Ê¹w´ú­È¡G©Ò¦³³Q`¹w´ú¦³¯f`ªº¤H¡A`¯uªº¦³¯f`ªº¤ñ¨Ò
+- Negative Predictive Value (NPV) ³±©Ê¹w´ú­È¡G©Ò¦³³Q`¹w´ú¨S¯f`ªº¤H¡A`¯uªº¨S¯f`ªº¤ñ¨Ò
 
-æ•ˆèƒ½æŒ‡æ¨™
+®Ä¯à«ü¼Ğ
 ====================================
- å›æƒ³ä¸€ä¸‹å‰›å‰›çš„é©—è­‰çµæœ
+ ¦^·Q¤@¤U­è­èªºÅçÃÒµ²ªG
 
 ```r
 table(x=DMAns,
@@ -707,16 +768,16 @@ table(x=DMAns,
 ```
 
 ```
-   y
-x   neg pos
-  0  75  22
-  1   9  24
+     y
+x     neg pos
+  pos   6  28
+  neg  73  23
 ```
-![plot of chunk unnamed-chunk-19](figures/para.png)
+![plot of chunk unnamed-chunk-27](figures/para.png)
 
-æ•ˆèƒ½æŒ‡æ¨™
+®Ä¯à«ü¼Ğ - ¹w´úÂà´«
 ====================================
- è¨ˆç®—é æ¸¬æ•ˆèƒ½åƒæ•¸
+ ­pºâ¹w´ú®Ä¯à°Ñ¼Æ
 
 ```r
 predictPoint<-
@@ -727,12 +788,12 @@ DMAns<-factor(ifelse(predictPoint>0.5,"pos","neg"),
                  levels=c("pos","neg"))
 ```
 
-æ•ˆèƒ½æŒ‡æ¨™
+®Ä¯à«ü¼Ğ - Sen, Spe
 ====================================
- è¨ˆç®—é æ¸¬æ•ˆèƒ½åƒæ•¸
+ §Q¥Î**caret**®M¥ó¡A­pºâ¹w´ú®Ä¯à°Ñ¼Æ
 
 ```r
-# install.packages("caret") #è¨ˆç®—åƒæ•¸çš„packages
+# install.packages("caret") #­pºâ°Ñ¼Æªºpackages
 library(caret)
 sensitivity(DMAns,
             PD2[PD2$Test==T,"diabetes"],
@@ -740,7 +801,7 @@ sensitivity(DMAns,
 ```
 
 ```
-[1] 0.5217391
+[1] 0.5490196
 ```
 
 ```r
@@ -750,12 +811,12 @@ specificity(DMAns,
 ```
 
 ```
-[1] 0.8928571
+[1] 0.9240506
 ```
 
-æ•ˆèƒ½æŒ‡æ¨™
+®Ä¯à«ü¼Ğ - PPV, NPV
 ====================================
- è¨ˆç®—é æ¸¬æ•ˆèƒ½åƒæ•¸
+ ­pºâ¹w´ú®Ä¯à°Ñ¼Æ
 
 ```r
 posPredValue(DMAns,
@@ -764,7 +825,7 @@ posPredValue(DMAns,
 ```
 
 ```
-[1] 0.7272727
+[1] 0.8235294
 ```
 
 ```r
@@ -774,18 +835,83 @@ negPredValue(DMAns,
 ```
 
 ```
-[1] 0.7731959
+[1] 0.7604167
 ```
 
-é æ¸¬æ¨¡å‹å»ºç«‹èˆ‡é©—è­‰ç¶œåˆç·´ç¿’
+®Ä¯à«ü¼Ğ
+====================================
+·íµª®×¬O¤G¤¸¡A¥B¼Ò«¬¿é¥X¬°³sÄò­È(¦p¾÷²v)®É¡G
+
+- Area under the ROC curve (AUC)
+![plot of chunk unnamed-chunk-31](https://upload.wikimedia.org/wikipedia/commons/6/6b/Roccurves.png)
+
+®Ä¯à«ü¼Ğ - AUC & ROC curve
+====================================
+ ­pºâ¹w´ú®Ä¯à°Ñ¼Æ AUC
+
+```r
+# install.packages("pROC")
+library(pROC)
+# Draw ROC curve.
+result.roc <- 
+  roc(PD2[PD2$Test==T,"diabetes"], predictPoint) 
+# youden or closest.topleft
+coords(result.roc, "best", 
+       best.method="closest.topleft", 
+       ret=c("threshold", "accuracy"))
+```
+
+```
+threshold  accuracy 
+0.2835452 0.8153846 
+```
+
+®Ä¯à«ü¼Ğ - AUC & ROC curve
+====================================
+ ­pºâ¹w´ú®Ä¯à°Ñ¼Æ AUC
+  ­pºâ¹w´ú®Ä¯à°Ñ¼Æ AUC
+
+```r
+plot(result.roc, print.thres="best", 
+     print.thres.best.method="closest.topleft")
+```
+
+![plot of chunk unnamed-chunk-33](05DataMining-figure/unnamed-chunk-33-1.png)
+
+®Ä¯à«ü¼Ğ - AUC & ROC curve
+====================================
+ ­pºâ¹w´ú®Ä¯à°Ñ¼Æ AUC
+
+```r
+library(ROCR)
+pred=prediction(predictPoint,
+                PD2[PD2$Test==T,"diabetes"])
+#Calculate the AUC value
+perf_AUC=performance(pred,"auc") 
+AUC=perf_AUC@y.values[[1]]
+#plot the actual ROC curve
+perf_ROC=performance(pred,"tpr","fpr") 
+plot(perf_ROC, main="ROC plot")
+text(0.5,0.5,paste("AUC = ",
+                   format(AUC, digits=5, 
+                          scientific=FALSE)))
+```
+
+![plot of chunk unnamed-chunk-34](05DataMining-figure/unnamed-chunk-34-1.png)
+
+®Ä¯à«ü¼Ğ - AUC & ROC curve
+====================================
+ With **ggplot** and **pROC**: https://gist.github.com/jwaage/6d8f4eb096e4f18a0894ca1ce27af834
+
+¹w´ú¼Ò«¬«Ø¥ß»PÅçÃÒºî¦X½m²ß
 ====================================
 type:alert
 
-- Sonarè³‡æ–™è¨˜è¼‰ç¤¦ç‰©èˆ‡çŸ³é ­æ¥å—å„å€‹ä¸åŒè§’åº¦çš„è²æ³¢æ’æ“Šå¾Œï¼Œæ¥æ”¶åˆ°çš„å›è²æ•¸å€¼
-- ä¸€å…±æœ‰60å€‹åƒæ•¸ï¼Œä»£è¡¨ä½¿ç”¨ä¸€ç‰¹åˆ¥è§’åº¦çš„è²æ³¢æ’æ“Šç¤¦çŸ³æ‰€å¾—å›è²
-- åˆ†é¡çµæœç‚ºäºŒå…ƒåˆ†é¡ï¼ŒåŒ…æ‹¬ç¤¦ç‰© ( M ) èˆ‡çŸ³é ­ ( R ) 
-- å°‡è³‡æ–™éš¨æ©Ÿåˆ†ç‚ºè¨“ç·´çµ„(2/3)èˆ‡æ¸¬è©¦çµ„(1/3)
-- è¨“ç·´æ¨¡å‹ä¸¦é©—è­‰ï¼
+- Sonar¸ê®Æ°O¸üÄqª«»P¥ÛÀY±µ¨ü¦U­Ó¤£¦P¨¤«×ªºÁnªi¼²À»«á¡A±µ¦¬¨ìªº¦^Án¼Æ­È
+- ¤@¦@¦³60­Ó°Ñ¼Æ¡A¥Nªí¨Ï¥Î¤@¯S§O¨¤«×ªºÁnªi¼²À»Äq¥Û©Ò±o¦^Án
+- ¤ÀÃşµ²ªG¬°¤G¤¸¤ÀÃş¡A¥]¬AÄqª« ( M ) »P¥ÛÀY ( R ) 
+- ±N¸ê®ÆÀH¾÷¤À¬°°V½m²Õ(2/3)»P´ú¸Õ²Õ(1/3)
+- °V½m¼Ò«¬¨ÃÅçÃÒ¡I
 
 library(mlbench)
 data(Sonar) 
@@ -806,7 +932,8 @@ http://topepo.github.io/caret/index.html
 
 caret: data splitting
 ====================================
-`createDataPartition`
+- `createDataPartition`
+  - p: °V½m²Õ¤ñ¨Ò
 
 ```r
 library(caret)
@@ -831,15 +958,29 @@ head(trainIndex)
 
 caret: data splitting
 ====================================
-`createDataPartition`
+¨Ï¥Î`createDataPartition`ªº¿é¥X°µ¤l¶°
 
 ```r
 trainData<-iris[trainIndex,]
 testData<-iris[-trainIndex,]
+nrow(trainData)
+```
+
+```
+[1] 120
+```
+
+```r
+nrow(testData)
+```
+
+```
+[1] 30
 ```
 
 caret: model tuning using resampling
 ====================================
+`trainControl`³]©w¼Ò«¬°Ñ¼Æ°V½mªk
 
 ```r
 fitControl <- 
@@ -852,13 +993,14 @@ fitControl <-
 
 Cross-validation
 ====================================
-- å…ˆåœ¨ä¸€å€‹å­é›†ä¸Šåšåˆ†æï¼Œ è€Œå…¶å®ƒå­é›†å‰‡ç”¨ä¾†åšå¾ŒçºŒå°æ­¤åˆ†æçš„ç¢ºèªåŠé©—è­‰
+- ¥ı¦b¤@­Ó¤l¶°¤W°µ¤ÀªR¡A ¦Ó¨ä¥¦¤l¶°«h¥Î¨Ó°µ«áÄò¹ï¦¹¤ÀªRªº½T»{¤ÎÅçÃÒ
 
-![plot of chunk unnamed-chunk-26](https://upload.wikimedia.org/wikipedia/commons/1/1c/K-fold_cross_validation_EN.jpg)
+![plot of chunk unnamed-chunk-38](https://upload.wikimedia.org/wikipedia/commons/1/1c/K-fold_cross_validation_EN.jpg)
 
 
 caret: model tuning using resampling
 ====================================
+method = "rpart" ¨Mµ¦¾ğ
 
 ```r
 set.seed(825)
@@ -887,13 +1029,13 @@ Resampling: Cross-Validated (10 fold, repeated 10 times)
 Summary of sample sizes: 108, 108, 108, 108, 108, 108, ... 
 Resampling results across tuning parameters:
 
-  cp     Accuracy   Kappa
-  0.000  0.9166667  0.875
-  0.425  0.7833333  0.675
-  0.500  0.3333333  0.000
+  cp     Accuracy   Kappa  
+  0.000  0.9108333  0.86625
+  0.425  0.7950000  0.69250
+  0.500  0.3333333  0.00000
 
-Accuracy was used to select the optimal model using  the largest value.
-The final value used for the model was cp = 0. 
+Accuracy was used to select the optimal model using the largest value.
+The final value used for the model was cp = 0.
 ```
 
 caret: evaluation
@@ -959,9 +1101,9 @@ head(trainIndexBinary)
 [1,]         1
 [2,]         2
 [3,]         3
-[4,]         5
-[5,]         6
-[6,]         7
+[4,]         4
+[5,]         5
+[6,]         6
 ```
 
 caret: data splitting
@@ -1018,16 +1160,16 @@ CART
 
 No pre-processing
 Resampling: Cross-Validated (10 fold, repeated 10 times) 
-Summary of sample sizes: 266, 265, 266, 266, 266, 265, ... 
+Summary of sample sizes: 266, 265, 265, 265, 266, 266, ... 
 Resampling results across tuning parameters:
 
   cp          ROC        Sens       Spec     
-  0.03645833  0.7717513  0.8449211  0.5666667
-  0.05729167  0.7611297  0.8151579  0.6242222
-  0.31250000  0.6156871  0.8532632  0.3781111
+  0.03809524  0.7664378  0.8431579  0.6636364
+  0.11428571  0.7668158  0.8100000  0.6978182
+  0.36190476  0.6079545  0.8600000  0.3559091
 
-ROC was used to select the optimal model using  the largest value.
-The final value used for the model was cp = 0.03645833. 
+ROC was used to select the optimal model using the largest value.
+The final value used for the model was cp = 0.1142857.
 ```
 
 caret: evaluation
@@ -1045,84 +1187,45 @@ knitr::kable(head(pred))
 
 |   |       neg|       pos|
 |:--|---------:|---------:|
-|9  | 0.8674033| 0.1325967|
-|40 | 0.8674033| 0.1325967|
-|41 | 0.8674033| 0.1325967|
-|51 | 0.8674033| 0.1325967|
-|57 | 0.0588235| 0.9411765|
-|71 | 0.3559322| 0.6440678|
+|19 | 0.8596491| 0.1403509|
+|36 | 0.8596491| 0.1403509|
+|40 | 0.8596491| 0.1403509|
+|51 | 0.8596491| 0.1403509|
+|57 | 0.3467742| 0.6532258|
+|69 | 0.8596491| 0.1403509|
 
-æ•ˆèƒ½æŒ‡æ¨™åè©è§£é‡‹
+®Ä¯à«ü¼Ğ¦Wµü¸ÑÄÀ
 ====================================
-![plot of chunk unnamed-chunk-36](figures/para.png)
-- TP: æœ‰ç—…ä¸”é æ¸¬ä¹Ÿæœ‰ç—…    FP: æ²’ç—…ä½†æ˜¯é æ¸¬æœ‰ç—…
-- TN: æ²’ç—…ä¸”é æ¸¬ä¹Ÿæ²’ç—…    FN: æœ‰ç—…ä½†é æ¸¬æ²’ç—…
+![plot of chunk unnamed-chunk-48](figures/para.png)
+- TP: ¦³¯f¥B¹w´ú¤]¦³¯f    FP: ¨S¯f¦ı¬O¹w´ú¦³¯f
+- TN: ¨S¯f¥B¹w´ú¤]¨S¯f    FN: ¦³¯f¦ı¹w´ú¨S¯f
 
 caret: evaluation
 ====================================
 
-```r
-predClass<-
-  ifelse(pred$pos>0.5,"pos","neg")
-confusionMatrix(data = predClass, 
-                reference = testDataBinary$diabetes)
-```
+
 
 ```
-Confusion Matrix and Statistics
+processing file: 05DataMining.Rpres
+Loading required package: lattice
+Loading required package: ggplot2
+Type 'citation("pROC")' for a citation.
 
-          Reference
-Prediction neg pos
-       neg  57  10
-       pos   9  21
-                                          
-               Accuracy : 0.8041          
-                 95% CI : (0.7111, 0.8778)
-    No Information Rate : 0.6804          
-    P-Value [Acc > NIR] : 0.004732        
-                                          
-                  Kappa : 0.5457          
- Mcnemar's Test P-Value : 1.000000        
-                                          
-            Sensitivity : 0.8636          
-            Specificity : 0.6774          
-         Pos Pred Value : 0.8507          
-         Neg Pred Value : 0.7000          
-             Prevalence : 0.6804          
-         Detection Rate : 0.5876          
-   Detection Prevalence : 0.6907          
-      Balanced Accuracy : 0.7705          
-                                          
-       'Positive' Class : neg             
-                                          
+Attaching package: 'pROC'
+
+The following objects are masked from 'package:stats':
+
+    cov, smooth, var
+
+Loading required package: gplots
+
+Attaching package: 'gplots'
+
+The following object is masked from 'package:stats':
+
+    lowess
+
+Quitting from lines 878-882 (05DataMining.Rpres) 
+¿ù»~: `data` and `reference` should be factors with the same levels.
+°±¤î°õ¦æ
 ```
-
-é æ¸¬æ¨¡å‹å»ºç«‹èˆ‡é©—è­‰ç¶œåˆç·´ç¿’
-====================================
-type:alert
-
-- Sonarè³‡æ–™è¨˜è¼‰ç¤¦ç‰©èˆ‡çŸ³é ­æ¥å—å„å€‹ä¸åŒè§’åº¦çš„è²æ³¢æ’æ“Šå¾Œï¼Œæ¥æ”¶åˆ°çš„å›è²æ•¸å€¼
-- ä¸€å…±æœ‰60å€‹åƒæ•¸ï¼Œä»£è¡¨ä½¿ç”¨ä¸€ç‰¹åˆ¥è§’åº¦çš„è²æ³¢æ’æ“Šç¤¦çŸ³æ‰€å¾—å›è²
-- åˆ†é¡çµæœç‚ºäºŒå…ƒåˆ†é¡ï¼ŒåŒ…æ‹¬ç¤¦ç‰© ( M ) èˆ‡çŸ³é ­ ( R ) 
-- å°‡è³‡æ–™éš¨æ©Ÿåˆ†ç‚ºè¨“ç·´çµ„(3/4)èˆ‡æ¸¬è©¦çµ„(1/4)
-- è¨“ç·´æ¨¡å‹ä¸¦é©—è­‰ï¼
-- ç”¨caret packageæä¾›çš„æ–¹æ³•æ’°å¯«
-
-library(mlbench)
-data(Sonar) 
-
-å…¶ä»–å¸¸ç”¨æ¨¡å‹
-====================================
-- SVM
-- Random Forest
-- AdaBoost
-- eXtreme Gradient Boosting (XGBoost)
-- http://topepo.github.io/caret/available-models.html
-
-åƒè€ƒè³‡æ–™
-====================================
-- caretå®˜ç¶² http://topepo.github.io/caret/index.html
-- Applied Predictive Modeling 
-  - By Max Kuhn and Kjell Johnson 
-  - http://appliedpredictivemodeling.com/
-

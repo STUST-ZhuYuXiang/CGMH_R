@@ -46,15 +46,15 @@ type:sub-section
 ====================================
 
 - **監督式**學習與**非監督式**學習
-- 監督式學習的特點是訓練資料中有**正確答案**，由輸入物件和預期輸出所組成，而演算法可以由訓練資料中學到或建立一個模式，並依此模式推測新的實例
-- 非監督式學習則不用提供**正確答案**，也就是不需要人力來輸入標籤，單純利用訓練資料的特性，將資料分群分組。
+- **監督式學習**的特點是訓練資料中有**正確答案**，由輸入物件和預期輸出所組成，而演算法可以由訓練資料中學到或建立一個模式，並依此模式推測新的實例
+- **非監督式學習**則不用提供**正確答案**，也就是不需要人力來輸入標籤，單純利用訓練資料的特性，將資料分群分組。
 
 資料探勘的分類
 ====================================
 
 - Supervised learning 監督式學習
     - Regression 迴歸：真實的'值'（流感案例數、恢復量表等）
-    - Classification 分類：分兩類（P/N, Yes/No, M/F, Sick/Not sick）/分多類 (A/B/C/D)
+    - Classification 分類：分兩類（P/N, Yes/No, M/F, Sick/Not sick）/分多類 (Type A/Type B/Type C/Type D)
 
 - Unsupervised learning 非監督式學習
     - Clustering 分群
@@ -64,10 +64,10 @@ type:sub-section
 ====================================
 
 在**監督式**學習中常見的資料探勘演算法如下： 
-  - Linear Regression 線性迴歸
-  - Logistic Regression 羅吉斯迴歸、邏輯迴歸
-  - Support Vector Machines 支持向量機
-  - Decision Trees 決策樹
+  - Linear Regression 線性迴歸 (輸出:連續值)
+  - Logistic Regression 羅吉斯迴歸、邏輯迴歸 (輸出:二元)
+  - Support Vector Machines 支持向量機 (輸出:連續值/二元)
+  - Decision Trees 決策樹 (輸出:連續值/二元)
   - K-Nearest Neighbor
   - Neural Networks 神經網路
   - Deep Learning 深度學習
@@ -85,20 +85,21 @@ type:sub-section
 Regression 迴歸
 ====================================
 
-- 用在了解兩個或多個變數間`是否相關`、`相關方向與強度`
+- 用在了解兩個或多個變數間`是否相關`、`相關方向`與`強度`
 - 建立`數學模型`以便觀察特定變數來預測研究者感興趣的變數
 
 常見的迴歸分析演算法包括：
 
-- Linear Regression 線性迴歸
-- Logistic Regression 羅吉斯迴歸、邏輯迴歸
+- Linear Regression 線性迴歸 (輸出:連續值)
+- Logistic Regression 羅吉斯迴歸、邏輯迴歸 (輸出:二元)
 
 Linear Regression 線性迴歸
 ====================================
 
-- 嘗試將Linear Regression 線性迴歸用在天竺鼠牙齒長度的資料
+- 嘗試將Linear Regression 線性迴歸用在天竺鼠牙齒生長情形的資料
 - 做天竺鼠`牙齒長度`與`維他命C劑量`的線性迴歸觀察
 ```{r lineart,message=FALSE,warning=FALSE}
+# install.packages("mlbench")
 library(mlbench)
 # The Effect of Vitamin C on Tooth Growth in Guinea Pigs
 data("ToothGrowth")
@@ -111,13 +112,14 @@ lm()
 
 - 在R中，最基本的簡單線性迴歸分析為`lm()`
 - `lm(formula,data=資料名稱)`，搭配formula使用
-- formula的撰寫方法為：依變項~自變項1＋自變項2＋....
+- formula的撰寫方法為：**依變項~自變項1＋自變項2＋**....
+- 分析天竺鼠`牙齒長度`與`維他命C劑量`的關係範例
 ```{r linear3,warning=F,message=F,fig.height=4.5}
 lm(len~dose,
    data =ToothGrowth)
 ```
 
-len = `9.764` * dose `7.423`
+len = `9.764` * dose + `7.423`
 
 glm()
 ====================================
@@ -170,16 +172,19 @@ len = `-3.700` * suppVC + `9.764` * dose + `9.272`
 - `Supplement type`的變項被轉為**虛擬變項 Dummy Variable**
 - suppVC
 - 如果是OJ(基準項)，會得到：
-
   - suppVC=0
   
 線性迴歸練習
 ====================================
 type:alert
 - 用[BostonHousing](https://archive.ics.uci.edu/ml/datasets/Housing)資料
-  - install.packages("mlbench")
-  - library(mlbench)
-  - data(BostonHousing)
+
+```{r warning=F,message=F,eval=F}
+install.packages("mlbench")
+library(mlbench)
+data(BostonHousing)
+```
+
 - 使用crim、tax、dis欄位預測medv(Median value of owner-occupied homes in $1000's)
   - glm()廣義線性迴歸
 
@@ -199,20 +204,20 @@ Logistic Regression 羅吉斯迴歸
 常用在`依變數為二元變數（非0即1）`的場合，如：
   - 生病/沒生病
   - 錄取/不錄取
-  - `family="binomial"` 邏輯迴歸模型
+  - `family="binomial"` 羅吉斯迴歸模型
 
 Logistic Regression 羅吉斯迴歸
 ====================================
 - 嘗試將Logistic Regression 羅吉斯迴歸用在糖尿病的資料
-- 做`得糖尿病與否`與`BMI`的羅吉斯迴歸觀察
 ```{r linear1,message=FALSE,warning=FALSE}
 library(mlbench)
 data("PimaIndiansDiabetes2")
+#去除有遺漏值的資料
 PimaIndiansDiabetes2<-
   PimaIndiansDiabetes2[complete.cases(PimaIndiansDiabetes2),]
 ```
 
-分析是否會得糖尿病？
+分析是否得糖尿病？
 ====================================
 ```{r warning=F,message=F,eval=F}
 head(PimaIndiansDiabetes2)
@@ -221,8 +226,9 @@ head(PimaIndiansDiabetes2)
 knitr::kable(head(PimaIndiansDiabetes2)) 
 ```
 
-分析是否會得糖尿病？
+分析是否得糖尿病？
 ====================================
+- 做`得糖尿病與否`與`懷孕`+`BMI`+`血糖`+`triceps`的羅吉斯迴歸觀察
 ```{r logistic2,warning=F,message=F,fig.height=4.5}
 mylogit <- 
   glm(diabetes ~ pregnant+glucose+triceps+mass,
@@ -241,19 +247,24 @@ knitr::kable(sum$coefficients)
 ====================================
 type:alert
 - 用[PimaIndiansDiabetes2](https://archive.ics.uci.edu/ml/datasets/Pima+Indians+Diabetes)資料
-  - install.packages("mlbench")
-  - library(mlbench)
-  - data(PimaIndiansDiabetes2)
-  - PimaIndiansDiabetes2<-
+
+```{r warning=F,message=F,eval=F}
+install.packages("mlbench")
+library(mlbench)
+data(PimaIndiansDiabetes2)
+PimaIndiansDiabetes2<-
   PimaIndiansDiabetes2[complete.cases(PimaIndiansDiabetes2),]
+```
+
 - 使用全部欄位預測diabetes
+  - diabetes ~ **.**
   - glm()廣義線性迴歸
   - family = "binomial"
 
 最佳模型篩選
 ====================================
 
-到底該用哪個模型來預測，會得到最準確的結果？在迴歸模型中，常用的判斷準則包括：
+到底該用哪個模型來預測，模型配適度會最好？在迴歸模型中，常用的判斷準則包括：
 
   - Akaike’s Information Criterion (AIC)
   - Bayesian Information Criterion (BIC)
@@ -376,10 +387,16 @@ prp(DT)
 ====================================
 type:alert
 - 用[PimaIndiansDiabetes2](https://archive.ics.uci.edu/ml/datasets/Pima+Indians+Diabetes)資料
-  - install.packages("mlbench")
-  - library(mlbench)
-  - data(PimaIndiansDiabetes2)
-- 使用所有欄位預測diabetes
+
+```{r warning=F,message=F,eval=F}
+install.packages("mlbench")
+library(mlbench)
+data(PimaIndiansDiabetes2)
+PimaIndiansDiabetes2<-
+  PimaIndiansDiabetes2[complete.cases(PimaIndiansDiabetes2),]
+```
+
+- 使用決策樹演算法，並用所有欄位預測diabetes
   - diabetes~.
 - 使用rpart.plot套件畫出決策樹
   - prp()
@@ -402,20 +419,46 @@ type:alert
   - 剩下的1/3做驗證`Test set`
 - 以下圖的監督式學習流程圖為例，可以注意到綠色箭頭的資料集在訓練過程中從未被使用。
 
+
 模型驗證
 ====================================
 ```{r echo=FALSE}
-knitr::include_graphics("figures/SupervisedLearning.png")
+knitr::include_graphics("figures/traintest1.PNG")
 ```
+
+模型驗證
+====================================
+```{r echo=FALSE}
+knitr::include_graphics("figures/traintest2.PNG")
+```
+
+模型驗證
+====================================
+```{r echo=FALSE}
+knitr::include_graphics("figures/traintest3.PNG")
+```
+
+模型驗證
+====================================
+```{r echo=FALSE}
+knitr::include_graphics("figures/traintest4.PNG")
+```
+
 
 模型驗證
 ====================================
 - 以Training set來`選看起來最好的模型`
 - 用Test set來`驗證模型是不是真的很好`
-- 想像.....訓練出來題庫答得好的學生，寫到新題目不一定會寫！？
+
 - 訓練模型時，只能看Training set，用Training set來選一個最好的模型
 - 訓練模型時，不能偷看Test set，才是真正的驗證
 
+
+模型驗證
+====================================
+```{r echo=FALSE}
+knitr::include_graphics("figures/SupervisedLearning.png")
+```
 
 Regression 迴歸驗證
 ====================================
@@ -446,7 +489,7 @@ Regression 迴歸驗證：資料分組
 PD2$Test<-F #新增一個參數紀錄分組
 #隨機取1/3當Test set
 PD2[sample(1:nrow(PD2),
-                            nrow(PD2)/3),]$Test<-T
+           nrow(PD2)/3),]$Test<-T
 # Training set : Test set病人數
 c(sum(PD2$Test==F),
   sum(PD2$Test==T))
@@ -492,13 +535,27 @@ Regression 迴歸驗證：模型驗證
 ====================================
 - 用Test set來評估模型好不好
 - 使用predict函數，將測試組資料放入預測模型中
+  - type = "response": y為 1 的機率
+- 將預結果predictPoint做初步轉換，>0.5的轉換為"pos"，代表有得糖尿病，並轉換成factor
+  - levels=c("pos","neg")，將正面(有病/有復發)設定為level 2，方便解讀
 ```{r warning=F,message=F,fig.height=3}
 predictPoint<-
     predict(finalModel_Both,
             PD2[PD2$Test==T,],
             type = "response")
-DMAns<-factor(ifelse(predictPoint>0.5,1,0),
-                 levels=c(0,1))
+DMAns<-factor(ifelse(predictPoint>0.5,"pos","neg"),
+                 levels=c("pos","neg"))
+head(DMAns)
+```
+
+Regression 迴歸驗證：模型驗證
+====================================
+- 用Test set來評估模型好不好
+- 使用predict函數，將測試組資料放入預測模型中
+  - type = "response": y為 1 的機率
+- 將預結果predictPoint做初步轉換，>0.5的轉換為"1"，代表有得糖尿病，並轉換成factor
+  - levels=c(0,1)，將正面(有病/有復發)設定為level 2，方便解讀
+```{r warning=F,message=F,fig.height=3}
 table(x=DMAns,
     y=PD2[PD2$Test==T,"diabetes"]) 
 ```
@@ -508,14 +565,14 @@ Regression 迴歸驗證：模型驗證
 - 用Test set來評估模型好不好
 - 使用predict函數，將測試組資料放入預測模型中
 ```{r warning=F,message=F,fig.height=4}
-plot(x=predictPoint,
-     y=PD2[PD2$Test==T,"diabetes"])
+plot(x=PD2[PD2$Test==T,"diabetes"],
+     y=predictPoint)
 ```
 
 
 效能指標
 ====================================
-當答案是二元時：效能指標
+當答案是二元時：
 
 - Sensitivity 敏感性
 - Specificity 特異性
@@ -533,7 +590,7 @@ knitr::include_graphics("figures/para.png")
 
 效能指標公式
 ====================================
-當答案是二元時：效能指標公式
+當答案是二元且輸出也為二元時：效能指標公式
  
 - Sensitivity 敏感性：所有`真的有病`的人，被`預測有病`的比例
 - Specificity 特異性：所有`真的沒病`的人，被`預測沒病`的比例
@@ -551,7 +608,7 @@ table(x=DMAns,
 knitr::include_graphics("figures/para.png")
 ```
 
-效能指標
+效能指標 - 預測轉換
 ====================================
  計算預測效能參數
 ```{r warning=F,message=F,fig.height=4.5}
@@ -563,9 +620,9 @@ DMAns<-factor(ifelse(predictPoint>0.5,"pos","neg"),
                  levels=c("pos","neg"))
 ```
 
-效能指標
+效能指標 - Sen, Spe
 ====================================
- 計算預測效能參數
+ 利用**caret**套件，計算預測效能參數
 ```{r warning=F,message=F,fig.height=4.5}
 # install.packages("caret") #計算參數的packages
 library(caret)
@@ -577,7 +634,7 @@ specificity(DMAns,
             negative="neg")
 ```
 
-效能指標
+效能指標 - PPV, NPV
 ====================================
  計算預測效能參數
 ```{r warning=F,message=F,fig.height=4.5}
@@ -588,6 +645,61 @@ negPredValue(DMAns,
             PD2[PD2$Test==T,"diabetes"],
              negative="neg")
 ```
+
+效能指標
+====================================
+當答案是二元，且模型輸出為連續值(如機率)時：
+
+- Area under the ROC curve (AUC)
+```{r echo=FALSE}
+knitr::include_graphics("https://upload.wikimedia.org/wikipedia/commons/6/6b/Roccurves.png")
+```
+
+效能指標 - AUC & ROC curve
+====================================
+ 計算預測效能參數 AUC
+```{r warning=F,message=F,fig.height=4.5}
+# install.packages("pROC")
+library(pROC)
+# Draw ROC curve.
+result.roc <- 
+  roc(PD2[PD2$Test==T,"diabetes"], predictPoint) 
+# youden or closest.topleft
+coords(result.roc, "best", 
+       best.method="closest.topleft", 
+       ret=c("threshold", "accuracy"))
+```
+
+效能指標 - AUC & ROC curve
+====================================
+ 計算預測效能參數 AUC
+  計算預測效能參數 AUC
+```{r warning=F,message=F,fig.height=4.5}
+plot(result.roc, print.thres="best", 
+     print.thres.best.method="closest.topleft")
+```
+
+效能指標 - AUC & ROC curve
+====================================
+ 計算預測效能參數 AUC
+```{r warning=F,message=F,fig.height=4.5}
+library(ROCR)
+pred=prediction(predictPoint,
+                PD2[PD2$Test==T,"diabetes"])
+#Calculate the AUC value
+perf_AUC=performance(pred,"auc") 
+AUC=perf_AUC@y.values[[1]]
+#plot the actual ROC curve
+perf_ROC=performance(pred,"tpr","fpr") 
+plot(perf_ROC, main="ROC plot")
+text(0.5,0.5,paste("AUC = ",
+                   format(AUC, digits=5, 
+                          scientific=FALSE)))
+```
+
+效能指標 - AUC & ROC curve
+====================================
+ With **ggplot** and **pROC**: https://gist.github.com/jwaage/6d8f4eb096e4f18a0894ca1ce27af834
 
 預測模型建立與驗證綜合練習
 ====================================
@@ -618,7 +730,8 @@ http://topepo.github.io/caret/index.html
 
 caret: data splitting
 ====================================
-`createDataPartition`
+- `createDataPartition`
+  - p: 訓練組比例
 ```{R}
 library(caret)
 set.seed(3456)
@@ -632,14 +745,17 @@ head(trainIndex)
 
 caret: data splitting
 ====================================
-`createDataPartition`
+使用`createDataPartition`的輸出做子集
 ```{R}
 trainData<-iris[trainIndex,]
 testData<-iris[-trainIndex,]
+nrow(trainData)
+nrow(testData)
 ```
 
 caret: model tuning using resampling
 ====================================
+`trainControl`設定模型參數訓練法
 ```{R}
 fitControl <- 
   trainControl(## 10-fold CV
@@ -660,6 +776,7 @@ knitr::include_graphics("https://upload.wikimedia.org/wikipedia/commons/1/1c/K-f
 
 caret: model tuning using resampling
 ====================================
+method = "rpart" 決策樹
 ```{R}
 set.seed(825)
 DTFit1 <- 
