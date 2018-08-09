@@ -21,7 +21,14 @@ type:sub-section
 - icd [教學](https://cran.r-project.org/web/packages/icd/vignettes/introduction.html)
 - AdhereR [官網](https://github.com/ddediu/AdhereR)
 - emr [官網](https://github.com/DHLab-CGU/emr)
-
+```{R eval=F}
+install.packages(c("dplyr","icd",
+                   "AdhereR","devtools"))
+install.packages(c("tidyr","ggplot2",
+                   "MASS","meta","ggrepel","DT"))
+devtools::install_github("PheWAS/PheWAS")
+devtools::install_github("DHLab-CGU/emr")
+```
 
 研究案例篩選
 ========================================================
@@ -68,7 +75,7 @@ DiagSum <- read_csv("DiagSumS.csv")
 BasicS <- read_csv("BasicS.csv")
 knitr::kable(BasicS[1:3,])
 ```
-- 篩選條件：只留下**歸戶代號**，出現在基本資料檔案中的紀錄
+- 篩選條件：只留下**歸戶代號**有出現在**基本資料檔案**中的紀錄
 - 符合條件的患者共有幾人？
 - 子集 or inner_join()
 
@@ -107,13 +114,25 @@ type:alert
 - 使用疾病分類統計檔DiagSum
 - 篩選條件：**診斷類別1**欄位中，出現**174**開頭或**175**開頭的診斷碼
 - 符合條件的患者共有幾人？
+- 提示：|
 
 研究案例篩選 - 基於醫療紀錄
 ========================================================
 
-若要搜尋多個欄位，可用以下方式:
+若要搜尋**多個欄位**，可用以下方式:
 - **filter_at**
+  - `filter_at(欲篩選欄位,篩選條件)`
+  - `vars()`: 用法同`select()`，條列欲篩選欄位
+  - `any_vars()`: 其中有一個欄位符合條件即可
+  - `all_vars()`: 所有欄位都要符合條件
 - 寬表轉長表
+
+研究案例篩選 - 基於醫療紀錄
+========================================================
+- `filter_at(欲篩選欄位,篩選條件)`
+- `vars()`: 用法同`select()`，條列欲篩選欄位
+- `any_vars()`: 其中有一個欄位符合條件即可
+- `all_vars()`: 所有欄位都要符合條件
 ```{R}
 library(dplyr)
 # 174.* Malignant neoplasm of female breast
@@ -123,20 +142,21 @@ SelectedCase<-DiagSum %>%
 knitr::kable(SelectedCase [1:10,c(1,3,12,26,27,28)])
 ```
 
+
 研究案例篩選 - 基於醫療紀錄
 ========================================================
 
 若要搜尋多個欄位，可用以下方式:
-- **filter_at**
-  - `filter_at(data,column,rules)`
-- 寬表轉長表
+- filter_at
+- **寬表轉長表**
+  - `tidyr`套件中的`gather(data,原欄位名稱,數值名稱,轉長表欄位)`
+  - ?select_helpers
 ```{R}
+library(tidyr)
 library(dplyr)
-# 174.* Malignant neoplasm of female breast
-SelectedCase<-DiagSum %>% 
-  filter_at(vars(starts_with("診斷類別")), 
-            any_vars(grepl("^174",.)))
-knitr::kable(SelectedCase [1:10,c(1,3,12,26,27,28)])
+DiagSumForGather<-DiagSum %>% 
+  select(院區,歸戶代號,住院日期,num_range("診斷類別",1:10))
+knitr::kable(DiagSumForGather [1:10,])
 ```
 
 研究案例篩選 - 基於醫療紀錄
@@ -147,12 +167,19 @@ knitr::kable(SelectedCase [1:10,c(1,3,12,26,27,28)])
 - **寬表轉長表**
   - `tidyr`套件中的`gather(data,原欄位名稱,數值名稱,轉長表欄位)`
 ```{R}
-library(tidyr)
-library(dplyr)
-DiagSumLong<-DiagSum %>% 
-  select(院區,歸戶代號,住院日期,starts_with("診斷類別")) %>%
+DiagSumLong<-DiagSumForGather %>%
   gather(診斷類別,診斷碼,starts_with("診斷類別"))
-# 174.* Malignant neoplasm of female breast
+knitr::kable(DiagSumLong [1:10,])
+```
+
+研究案例篩選 - 基於醫療紀錄
+========================================================
+
+若要搜尋多個欄位，可用以下方式:
+- filter_at
+- **寬表轉長表**
+  - `tidyr`套件中的`gather(data,原欄位名稱,數值名稱,轉長表欄位)`
+```{R}
 SelectedCase<-DiagSumLong %>% 
   filter(grepl("^174",診斷碼))
 knitr::kable(SelectedCase [1:10,])
@@ -233,17 +260,35 @@ FirstRecord<-DiagSum %>% group_by(歸戶代號,診斷類別1) %>%
 knitr::kable(FirstRecord[1:10,c(1,3,12,26)])
 ```
 
+
+
+
 研究案例篩選 - 醫療紀錄+特定首次診斷時間
 ========================================================
-檢查原始資料
+
+利用`dplyr`套件協助判斷資料內首次診斷
+
+- 同歸戶代號
+- 同診斷碼或**診斷群組**
+- 住院時間由小到大排序
+- 取同一歸戶代號、同**診斷群組**的第一筆資料
+
 ```{R}
 library(dplyr)
-OriRecord<-DiagSum %>% 
-  filter(歸戶代號=="0681F5827C1CA8129D038B9E127D7629D5B417FA"
-             &grepl("^174",診斷類別1))%>% arrange(AdmDate)
-knitr::kable(OriRecord[,c(1,3,12,26)])
-knitr::kable(FirstRecord[FirstRecord$歸戶代號=="0681F5827C1CA8129D038B9E127D7629D5B417FA",c(1,3,12,26)])
+FirstRecord<-DiagSum %>% group_by(歸戶代號,診斷類別1) %>%
+  arrange(AdmDate) %>% slice(1)
+knitr::kable(FirstRecord[1:10,c(1,3,12,26)])
 ```
+
+研究案例篩選 - 醫療紀錄+特定首次診斷時間
+========================================================
+type:alert
+
+- 使用疾病分類統計檔DiagSum
+- 篩選條件：**診斷類別1~6**欄位中，**1740**或**1741**診斷碼第一次出現的日期在2014年的患者
+- 符合條件的患者共有幾人？
+- 寬轉長？
+- filter_at？
 
 研究案例篩選 - 醫療紀錄+出現特定次數
 ========================================================
@@ -293,10 +338,51 @@ knitr::kable(DiagCount[1:10,])
 library(dplyr)
 DiagCount<-DiagSum %>% 
   group_by(歸戶代號,診斷類別1) %>% 
-  arrange(AdmDate)%>%
+  arrange(歸戶代號,診斷類別1,AdmDate)%>%
   mutate(Gap=(lead(AdmDate)-AdmDate),isFit=Gap<365) %>%
-  summarise(Count=sum(isFit))
-knitr::kable(DiagCount[1:10,])
+  summarise(Count=sum(isFit,na.rm = T))
+DiagCount %>% arrange(desc(Count)) %>%
+  head() %>%knitr::kable()
+```
+
+研究案例篩選 - 醫療紀錄+時間內出現多次 步驟1
+========================================================
+分組排序
+```{R}
+DiagSum %>% 
+  group_by(歸戶代號,診斷類別1) %>% 
+  arrange(歸戶代號,診斷類別1,AdmDate) %>% 
+  select(歸戶代號,診斷類別1,AdmDate) %>%
+  filter(歸戶代號=="43CCF41959798888F18EAED638A141F37A2B15C8") %>%
+  head() %>% knitr::kable()
+```
+
+研究案例篩選 - 醫療紀錄+時間內出現多次  步驟2
+========================================================
+前後列相減
+```{R}
+DiagSum %>% 
+  group_by(歸戶代號,診斷類別1) %>% 
+  arrange(歸戶代號,診斷類別1,AdmDate)%>%
+  mutate(Gap=(lead(AdmDate)-AdmDate),isFit=Gap<365) %>% 
+  select(歸戶代號,診斷類別1,AdmDate,Gap,isFit) %>%
+  filter(歸戶代號=="43CCF41959798888F18EAED638A141F37A2B15C8") %>%
+  head() %>% knitr::kable()
+```
+
+研究案例篩選 - 醫療紀錄+時間內出現多次
+========================================================
+計算TRUE的個數
+
+```{R}
+DiagSum %>% 
+  group_by(歸戶代號,診斷類別1) %>% 
+  arrange(歸戶代號,診斷類別1,AdmDate)%>%
+  mutate(Gap=(lead(AdmDate)-AdmDate),isFit=Gap<365) %>%
+  summarise(Count=sum(isFit,na.rm = T)) %>% 
+  select(歸戶代號,診斷類別1,Count) %>%
+  filter(歸戶代號=="43CCF41959798888F18EAED638A141F37A2B15C8") %>%
+  head() %>% knitr::kable()
 ```
 
 研究案例篩選 - 醫療紀錄+時間內出現多次
@@ -304,7 +390,7 @@ knitr::kable(DiagCount[1:10,])
 type:alert
 
 - 使用疾病分類統計檔DiagSum
-- 診斷類別＊**1~6欄位**中，出現**174**開頭診斷碼大於2次
+- 診斷類別**1~6欄位**中，出現**174**開頭診斷碼在60天內大於1次
 - 符合條件的患者共有幾人？
 
 研究案例篩選 - 應保留的重要資料
@@ -318,34 +404,220 @@ type:alert
 ========================================================
 - `dplyr`套件是你的好朋友
 - 資料量大（txt檔超過500MB）改用`data.table`套件，加速處理
+  - `data.table` [教學](http://yijutseng.github.io/DataScienceRBook/eda.html#datatable)
 - 搭配`tidyr`套件使用
+  - 長寬表轉換
+
 
 醫學資料處理: 診斷碼處理
 ========================================================
 type:sub-section 
 
+- icd 9 vs. icd 10
 - icd轉型
 - icd分群
-- icd 9 vs. icd 10
 - `emr`套件
-
-醫學資料處理: 診斷碼處理 -icd轉型
-========================================================
-
-醫學資料處理: 診斷碼處理 -icd分群
-========================================================
 
 醫學資料處理: 診斷碼處理 -icd 9 vs. icd 10
 ========================================================
 
-醫學資料處理: 診斷碼處理 -emr
+```{r echo=FALSE}
+knitr::include_graphics("https://www.cdc.gov/nchs/images/icd/icd_9_and_10_differences.png")
+```
+
+醫學資料處理: 診斷碼處理 -icd轉型
 ========================================================
+174.8 vs. 1748 ?
+
+MALIGNANT NEOPLASM OF OTHER SPECIFIED SITES OF FEMALE BREAST
+```{R}
+DiagSum %>% 
+  filter(診斷類別1=="1748") %>% 
+  select(歸戶代號,住院日期,診斷類別1) %>%
+  head() %>% knitr::kable()
+```
+
+醫學資料處理: 診斷碼處理 -icd轉型
+========================================================
+使用`icd`套件，icd 9和icd 10分開處理
+
+- 將icd 9 和 10分開
+  - 2016-01-01
+  - 跨年度資料要特別檢查
+- 分別使用`icd_short_to_decimal()`轉換
+
+```{R}
+DiagSumICD9<-DiagSum %>% 
+  filter(出院日期<"20160101") 
+DiagSumICD10<-DiagSum %>% 
+  filter(出院日期>="20160101") 
+```
+
+醫學資料處理: 診斷碼處理 -icd轉型
+========================================================
+使用`icd`套件，icd 9和icd 10分開處理
+
+- 將icd 9 和 10分開
+  - 2016-01-01
+  - 跨年度資料要特別檢查
+- 分別使用`icd_short_to_decimal()`轉換
+```{R}
+library(icd)
+icd_short_to_decimal.icd9(DiagSumICD9$診斷類別1) %>% head()
+icd_short_to_decimal.icd10(DiagSumICD10$診斷類別1) %>% head()
+```
+
+
+
+
+醫學資料處理: 診斷碼處理 -icd分群
+========================================================
+- 不可能每個診斷碼都視為不同病 --> 須整合
+  -使用`icd`套件，將icd 9和icd 10分群
+  - [Elixhauser](https://www.hcup-us.ahrq.gov/toolssoftware/comorbidity/comorbidity.jsp)
+  
+```{R}
+DiagSumICD10Small<-
+  DiagSumICD10 %>% select(歸戶代號,診斷類別1)
+library(icd)
+icd10_comorbid_elix(DiagSumICD10Small) %>% 
+  head() %>% knitr::kable()
+```
+
+醫學資料處理: 診斷碼處理 -icd分群
+========================================================
+- 不可能每個診斷碼都視為不同病 --> 須整合
+  -使用`emr`套件，將icd 9和icd 10分群
+  - CCS
+      - [icd 9](https://www.hcup-us.ahrq.gov/toolssoftware/ccs/ccs.jsp)
+      - [icd 10](https://www.hcup-us.ahrq.gov/toolssoftware/ccs10/ccs10.jsp)
+      - `groupIcdBasedOnCCS(資料名稱,ID欄位名稱,診斷碼欄位名稱,日期欄位名稱,ICD10轉換日)`
+```{R eval=F}
+## bug 修復中
+library(emr)
+groupIcdBasedOnCCS(DiagSum,歸戶代號,
+                    診斷類別1,AdmDate,"2016-01-01")
+```
+
 
 醫學資料處理: 藥物資料處理
 ========================================================
 type:sub-section 
 
+- `AdhereR`
+  - Estimating the adherence to medications 
+  - [教學](https://cran.r-project.org/web/packages/AdhereR/vignettes/AdhereR-overview.html)
+
+醫學資料處理: 藥物資料載入
+========================================================
+```{R}
+library(AdhereR)
+ExamplePats <- 
+  med.events[med.events$PATIENT_ID %in% c(37, 76), ]
+knitr::kable(ExamplePats)
+```
+
+醫學資料處理: 藥物資料視覺化
+========================================================
+```{R}
+cma0 <- CMA0(data=ExamplePats,
+             ID.colname="PATIENT_ID", 
+             event.date.colname="DATE", 
+             event.duration.colname="DURATION", 
+             event.daily.dose.colname="PERDAY", 
+             medication.class.colname="CATEGORY", 
+             followup.window.start=0,  
+             observation.window.start=182, 
+             observation.window.duration=365,
+             date.format="%m/%d/%Y");
+plot(cma0, 
+     align.all.patients=TRUE); 
+```
+
+醫學資料處理: 藥物遵從性計算
+========================================================
+CMA1~8
+```{r}
+cma1 <- CMA1(data=ExamplePats,
+             ID.colname="PATIENT_ID",
+             event.date.colname="DATE",
+             event.duration.colname="DURATION",
+             followup.window.start=0, 
+             observation.window.start=182, 
+             observation.window.duration=365,
+             date.format="%m/%d/%Y");
+cma1$CMA
+```
+
+
+醫學資料處理: 藥物資料視覺化
+========================================================
+```{r}
+# plot only patient 76 
+plot(cma1, 
+     patients.to.plot=c("76"), 
+     legend.x=520); 
+```
+
+
 醫學資料處理: 多重測量資料整合
 ========================================================
 type:sub-section 
 
+- 許多醫療紀錄在一段時間內有有多筆資料
+  - 量多次血壓
+  - 測多次血糖
+  - 等等等...
+- 處理方式
+  - 不處理
+  - 取平均、最大、最小
+  - 取第一點、最後一點
+  - 取變化量
+  
+  
+醫學資料處理: 多重測量資料整合
+========================================================
+先載入範例資料
+```{R}
+library(readr)
+LabSum <- read_csv("LabS.csv")
+knitr::kable(LabSum[1:10,c(3,9,10,12)])
+```
+
+  
+多重測量資料整合: 取平均、最大、最小、變化量
+=======================================================
+- 使用`dplyr`，搭配`group_by()`、`summarise()`。
+- 別忘了將檢驗結果轉成數值型態！
+```{R}
+LabSum %>% group_by(歸戶代號,檢驗名稱縮寫,檢體) %>%
+  mutate(Result=as.numeric(檢驗結果值)) %>%
+  summarise(COUNT=n(),
+            MEAN=mean(Result),
+            MAX=max(Result),
+            MIN=min(Result),
+            SD=sd(Result)) %>%
+  knitr::kable()
+```
+
+多重測量資料整合: 取第一點
+========================================================
+- 使用`dplyr`，搭配`group_by()`、`slice()`。
+```{R}
+LabSum %>% group_by(歸戶代號,檢驗名稱縮寫,檢體) %>%
+  arrange(歸戶代號,檢驗名稱縮寫,檢體,輸入日期) %>%
+  slice(1) %>%
+  select(c(3,9,10,12))%>%
+  knitr::kable()
+```
+
+多重測量資料整合: 最後一點
+========================================================
+- 使用`dplyr`，搭配`group_by()`、`slice()`。
+```{R}
+LabSum %>% group_by(歸戶代號,檢驗名稱縮寫,檢體) %>%
+  arrange(歸戶代號,檢驗名稱縮寫,檢體,輸入日期) %>%
+  slice(n()) %>%
+  select(c(3,9,10,12))%>%
+  knitr::kable()
+```
