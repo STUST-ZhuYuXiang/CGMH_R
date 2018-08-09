@@ -608,6 +608,7 @@ LabSum %>% group_by(歸戶代號,檢驗名稱縮寫,檢體) %>%
   arrange(歸戶代號,檢驗名稱縮寫,檢體,輸入日期) %>%
   slice(1) %>%
   select(c(3,9,10,12))%>%
+  head()%>%
   knitr::kable()
 ```
 
@@ -619,5 +620,6 @@ LabSum %>% group_by(歸戶代號,檢驗名稱縮寫,檢體) %>%
   arrange(歸戶代號,檢驗名稱縮寫,檢體,輸入日期) %>%
   slice(n()) %>%
   select(c(3,9,10,12))%>%
+  head()%>%
   knitr::kable()
 ```
