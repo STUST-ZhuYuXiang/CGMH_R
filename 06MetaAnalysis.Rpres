@@ -21,6 +21,7 @@ type:sub-section
 - 統合分析相關
   - metagear
   - RISmed
+  - metafor [官方文件](https://wviechtb.github.io/metafor/index.html)
 
 - 資料處理相關
   - dplyr
@@ -31,6 +32,7 @@ type:sub-section
 ```{r echo=FALSE}
 knitr::include_graphics("Review.png")
 ```
+
 將某一個主題相關的文獻搜尋、統整，進一步做出結論。
 
 文獻回顧的方式分成兩種：
@@ -45,9 +47,27 @@ knitr::include_graphics("Review.png")
 
 什麼是統合分析meta-analysis？
 ====================================
+- "The analysis of analyses"
+  - Gene V. Glass Primary, secondary and meta-analysis of research, Educational Researcher, 1976.
 - 大量蒐集個別研究的分析結果，作統計分析
 - 使用相同的統計方法評論大量的研究結果
 
+什麼是統合分析meta-analysis？
+====================================
+A meta-analysis is the synthesis of: 
+- K compatible **effects** (Yi)
+- Giving greater weight to studies with:
+  - Less variance (Vi)
+  - More precision (Wi = 1/Vi )
+
+Compatible effects
+====================================
+Almost any aggregate statistic of interest:
+
+- Mean, Mean difference, Mean change
+- Risk ratio, Odds ratio, Risk difference
+- Incidence rate, Prevalence, Proportion
+- Correlation
 
 統合分析步驟
 ====================================
@@ -73,6 +93,24 @@ Data-based exhausted search
 
 PubMed – `RISmed` package
 ====================================
+`EUtilsSummary( [query], [db], [search.limits])`
+- `query`: String query as given on PubMed site
+- `db`: String name of NCBI database
+- `search.limits`: Additional arguments to restrict search
+
+PubMed – `RISmed` package
+====================================
+```{R}
+library(RISmed)
+fit <- EUtilsSummary("rofecoxib[ti]+British Medical Journal[jo]", db = "pubmed")
+QueryTranslation(fit) # Extract the translated query
+QueryCount(fit) # Extract the number of matched records
+fetch <- EUtilsGet(fit)  # Medline Object
+getSlots("Medline") # Available methods
+ArticleTitle(fetch)[1:5]
+Author(fetch)[[1]] ##
+#Year(fetch)
+```
 
 Scopus – 下載輸出
 ====================================
@@ -119,26 +157,131 @@ type:sub-section
 - Subgroup analysis
 - Sensitivity analysis
 
+載入練習用資料
+====================================
+```{R}
+library(metafor)
+# BCG meta-analytic dataset
+data(dat.bcg) 
+knitr::kable(dat.bcg) 
+```
+
 Summary effect
 ====================================
-Fixed effect model
-Common true value
+- Fixed effect model
+  - Common true value
 
-Random effects model
-Normal distribution
+- Random effects model
+  - Normal distribution
 
-Assess heterogeneity
+
+Summary effect
+====================================
+`rma(yi, vi, method,...) `
+- yi effect size
+- vi variances
+- method type of model approach
+
+```{R}
+library(metafor)
+result.ormr <- 
+  rma(ai = tpos, bi = tneg, 
+      ci = cpos, di = cneg, 
+      data = dat.bcg, 
+      measure = "OR", method = "DL")
+```
+
+Summary effect
+====================================
+```{R}
+summary(result.ormr)
+```
+
+Assess Heterogeneity
 ====================================
 接著是評估「個別論文的效果」和「綜合性效果」是否有極大的差異性。異質性越高，資料的整合越難，可能會影響到分析的結論。（通常 p 值 < 0.1 ，就可以判定這些論文間存在有明顯的異質性）
+0% to 30% Low
+→ ·
+30% to 60% Moderate
+→ ·
+50% to 90%
+→ Substantial · 75% to 100% → Considerable
+τ2 ·
+Higgins'
+I2
+· H2 H
+Index
+,
+·
+Intra-class correlation (ICC)
+```{R}
+result.ormr$I2
+result.ormr$H2
+confint(result.ormr)
+```
+
+The Forest Plot
+====================================
+```{R}
+forest(result.ormr) # DEFAULT PLOT
+```
+
+The Forest Plot
+====================================
+- order: Sort by "obs", "fit", "prec", etc.
+- slab: Change study labels
+- ilab: Add study information
+- transf: Apply function to effects
+- psize: Symbol sizes
+```{R}
+study.names <- 
+  letters[1:result.ormr$k] 
+study.year <- 
+  2000 + sample(0:9, 
+                result.ormr$k,
+                replace = T)
+forest(result.ormr, order = "obs", 
+       slab = study.names, ilab = study.year, 
+       ilab.xpos = -4)
+```
+
+The Forest Plot
+====================================
+
+```{R}
+forest(result.ormr, 
+       order = "obs", 
+       slab = study.names, 
+       ilab = study.year, 
+       ilab.xpos = -4)
+```
 
 Subgroup analysis
 ====================================
 檢驗綜合效果（例如：介入成效）是否因為某些變項不同而有所差異，例如：男性的介入效果是否優於女性的效果。
 
-
+```
+### fit random-effects model in the three subgroups
+res.s <- rma(ai=tpos, bi=tneg, ci=cpos, di=cneg, data=dat.bcg, measure="RR",
+             subset=(alloc=="systematic"), method="REML")
+res.r <- rma(ai=tpos, bi=tneg, ci=cpos, di=cneg, data=dat.bcg, measure="RR",
+             subset=(alloc=="random"), method="REML")
+res.a <- rma(ai=tpos, bi=tneg, ci=cpos, di=cneg, data=dat.bcg, measure="RR",
+             subset=(alloc=="alternate"), method="REML")
+```
 Sensitivity analysis
 ====================================
-目的是將某些不合適的論文刪除後，看看剩餘論文的合併效果是否會因此更改，測試整體的穩定度。如果某篇論文被刪除後，造成綜合性效果明顯改變，就應該在論文的Discussion部分，說明這一篇論文對於整體綜合性效果的重要性。
+- 將某篇論文刪除後，看看剩餘論文的合併效果是否會不同，測試整體的穩定度
+- 如果某篇論文被刪除後，造成綜合性效果明顯改變，就應該在論文的Discussion部分，說明這一篇論文對於分析的重要性
+```{R}
+cases <- leave1out(result.ormr) 
+knitr::kable(cases)
+```
+Sensitivity analysis
+====================================
+```{R}
+which(cases$I2 == min(cases$I2)) 
+```
 
 出版偏差評估
 ====================================
@@ -148,9 +291,18 @@ type:sub-section
 
 Funnel plot
 ====================================
-Meta-analysis的最後一個步驟，通常會以漏斗圖偵測「出版偏差」。
-出版偏差，研究人員通常傾向發表具有正向效果的文獻，而不傾向發表負向效果的文章。如此一來，形成了在收集文獻過程中，某些應該存在的研究結果不容易被發現的情況。
+- 以漏斗圖偵測「出版偏差」
+  - 研究人員通常傾向發表具有正向效果的文獻，而不傾向發表負向效果的文章
+  - 某些應該存在的研究結果不容易被發現
+-X軸代表風險差，Y軸代表標準差，黑點代表每一份研究，越上面的研究表示標準差越小（樣本數越大）。
+- 漏斗圖如果呈現對稱，表示沒有出版偏差；若呈現不對稱，表示有出版偏差的情形，這部分要注意。
+```{R}
+funnel(result.ormr)
+```
 
-透過這張圖可以看到，X軸代表風險差，Y軸代表標準差，黑點代表每一份研究，越上面的研究表示標準差越小（樣本數越大）。漏斗圖如果呈現對稱，表示沒有出版偏差；若呈現不對稱，表示有出版偏差的情形，這部分要注意。
-
-
+Funnel plot
+====================================
+```{R}
+trimfill(result.ormr) # Only applicable for FE or RE objects
+funnel(trimfill(result.ormr))
+```
