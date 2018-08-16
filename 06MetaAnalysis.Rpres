@@ -19,21 +19,23 @@ type:sub-section
 統合分析使用套件
 ====================================
 - 統合分析相關
-  - metagear
-  - RISmed
+  - metagear [教學](http://lajeunesse.myweb.usf.edu/metagear/metagear_basic_vignette.html)
+  - RISmed [教學](https://amunategui.github.io/pubmed-query/)
   - metafor [官方文件](https://wviechtb.github.io/metafor/index.html)
 
 - 資料處理相關
-  - dplyr
+  - dplyr [官方網站](https://dplyr.tidyverse.org/)
   
 
 什麼是Review？系統性回顧？
 ====================================
+將某一個主題相關的文獻搜尋、統整，進一步做出結論。
+
 ```{r echo=FALSE}
 knitr::include_graphics("Review.png")
 ```
 
-將某一個主題相關的文獻搜尋、統整，進一步做出結論。
+
 
 文獻回顧的方式分成兩種：
 - 敘述性綜論
@@ -55,24 +57,30 @@ knitr::include_graphics("Review.png")
 什麼是統合分析meta-analysis？
 ====================================
 A meta-analysis is the synthesis of: 
-- K compatible **effects** (Yi)
+- `K` compatible **effects** 
+  - Mean, Mean difference, Mean change
+  - Risk ratio, Odds ratio, Risk difference
+  - Incidence rate, Prevalence, Proportion
+  - Correlation
 - Giving greater weight to studies with:
-  - Less variance (Vi)
-  - More precision (Wi = 1/Vi )
+  - Less variance 
+  - More precision 
 
-Compatible effects
+什麼是統合分析meta-analysis？
 ====================================
-Almost any aggregate statistic of interest:
-
-- Mean, Mean difference, Mean change
-- Risk ratio, Odds ratio, Risk difference
-- Incidence rate, Prevalence, Proportion
-- Correlation
+```{R echo=F}
+library(metafor)
+result.ormr <- 
+  rma(ai = tpos, bi = tneg, 
+      ci = cpos, di = cneg, 
+      data = dat.bcg, 
+      measure = "OR", method = "DL")
+forest(result.ormr) # DEFAULT PLOT
+```
 
 統合分析步驟
 ====================================
 - 文獻搜尋
-- 研究品質評估
 - 資料萃取
 - 統計分析
 - 出版偏差評估
@@ -84,6 +92,12 @@ type:sub-section
 - Data-based exhausted search
 - Abstract screening
 
+Keywords
+====================================
+- (K1) and (K2)
+- (K1 or A1) and (K2 or A2)
+- 文章太多的話: (K1) and (K2) and (K3)
+
 Data-based exhausted search
 ====================================
 - PubMed – `RISmed` package
@@ -93,7 +107,8 @@ Data-based exhausted search
 
 PubMed – `RISmed` package
 ====================================
-`EUtilsSummary( [query], [db], [search.limits])`
+`EUtilsSummary( query, db, search.limits)`
+
 - `query`: String query as given on PubMed site
 - `db`: String name of NCBI database
 - `search.limits`: Additional arguments to restrict search
@@ -103,49 +118,178 @@ PubMed – `RISmed` package
 ```{R}
 library(RISmed)
 fit <- EUtilsSummary("rofecoxib[ti]+British Medical Journal[jo]", db = "pubmed")
-QueryTranslation(fit) # Extract the translated query
-QueryCount(fit) # Extract the number of matched records
-fetch <- EUtilsGet(fit)  # Medline Object
-getSlots("Medline") # Available methods
-ArticleTitle(fetch)[1:5]
-Author(fetch)[[1]] ##
-#Year(fetch)
+summary(fit)
+QueryTranslation(fit) 
+QueryCount(fit) 
+```
+
+PubMed – `RISmed` package
+====================================
+
+`EUtilsGet`: 取得查詢結果
+
+```{R}
+fetch <- EUtilsGet(fit) 
+ArticleTitle(fetch)[1:3]
+Author(fetch)[[1]] 
+```
+
+PubMed – `RISmed` package
+====================================
+將重要資訊整理成`data.frame`
+```{R}
+pubmed_data <-
+  data.frame(Title=ArticleTitle(fetch),
+             Abstract=AbstractText(fetch),
+             PMID=PMID(fetch),
+             ELocationID=ELocationID(fetch),
+             Language=Language(fetch),
+             stringsAsFactors = F)
+knitr::kable(pubmed_data)
+```
+
+PubMed – `RISmed` package
+====================================
+資料初步處理後備用
+```{R}
+library(dplyr)
+#選擇語言為英文的文獻
+pubmed_data <- 
+  filter(pubmed_data, Language == "eng")
+colnames(pubmed_data) <-
+  c("TITLE","ABSTRACT",
+    "PMID","DOI","Language")
+pubmed_data$Source <- "PubMed"
 ```
 
 Scopus – 下載輸出
 ====================================
+檔案類型為csv檔
+```{r echo=FALSE}
+knitr::include_graphics("Scopus1.png")
+```
+
+Scopus – 下載輸出
+====================================
+檔案類型為csv檔
+```{r echo=FALSE}
+knitr::include_graphics("Scopus2.png")
+```
 
 Medline – 下載輸出
 ====================================
+檔案類型為xls檔
+```{r echo=FALSE}
+knitr::include_graphics("Medline.png")
+```
 
 Cochrane – 下載輸出
 ====================================
+檔案類型為txt檔
+```{r echo=FALSE}
+knitr::include_graphics("Cochrane.png")
+```
+
+
+整理所有資料庫搜尋結果
+====================================
+- 整理DOI與PMID的欄位，如去除前後空白等，方便進行比對重複文獻
+- 去除TITLE或ABSTRACT為`NA`，PMID與DOI**皆為**`NA`的文獻
+- 去除重複出現的文獻
+- 最後將data.frame存起來供未來使用
+
+
+Abstract Screening Tool
+====================================
+- 幫忙紀錄論文篩選結果
+  - Excel
+  - `metagear` package
+
+metagear package
+====================================
+
+metagear使用範例，實際使用時應為上述步驟整理好的檔案
+```{R eval=F}
+library(metagear)
+example<-example_references_metagear
+knitr::kable(head(example))
+```
+
+- [Mac安裝metagear會遇到的問題](https://stackoverflow.com/questions/44013379/installing-rgtk2-on-macos-sierra-version-10-12-4-and-r-version-3-4-0)
+
+metagear package
+====================================
+```{R eval=F}
+#輸入審查者名稱
+theTeam <- c("sch","yjt")
+#載入檔案
+paperScreened <-
+  effort_initialize(example) 
+
+#審查者的分工方式:平均分配
+paperDistribute <-
+  effort_distribute(paperScreened, 
+                    initialize = FALSE,
+                    reviewers = theTeam,
+                    effort = c(50, 50),
+                    save_split = TRUE) 
+```
 
 Abstract screening
 ====================================
-- `metagear` package
+```{R eval=F}
+#所有文獻交由第一位審查者審查
+paperTogether_1 <-
+  effort_distribute(paperScreened, 
+                    initialize = FALSE,
+                    reviewers = theTeam,
+                    effort = c(100, 0),
+                    save_split = TRUE) 
+#20%的文獻由第一位審查者審查；80%的文獻由第二位審查者審查
+paperTogether_2 <-
+  effort_distribute(paperScreened,
+                    initialize = FALSE,
+                    reviewers = theTeam,
+                    effort = c(20, 80),
+                    save_split = TRUE) 
+```
 
-研究品質評估
+metagear package
 ====================================
-type:sub-section
+```{R eval=F}
+#abstract_screener()開啟審查視窗
+abstract_screener("effort_sch.csv", 
+                  aReviewer = "sch")
+```
 
-- Quality assessment and control
-- Inter-rater reliability
-
-Quality assessment and control
+metagear package
 ====================================
+```{r echo=FALSE}
+knitr::include_graphics("metagear.png")
+```
+
 
 PRISMA statement
-
-Inter-rater reliability
 ====================================
+
+[PRISMA statement](http://www.prisma-statement.org/)
+
+```{r echo=FALSE}
+knitr::include_graphics("PRISMA.png")
+```
 
 
 資料萃取
 ====================================
-type:sub-section
 
-- Data collection
+- 「人數、平均數、標準差」（介入性研究，Outcome為連續變項）
+- 「人數、發生事件人數」（介入性研究，Outcome為二元變項）
+- 「勝算比及信賴區間」（觀察型研究，Outcome為二元變項）
+
+- 類別變項 (Odds ratio)
+- 連續變項但單位不同 (SMD)
+- 連續變項單位相同 (Diff in means)
+
 
 
 統計分析
@@ -159,6 +303,7 @@ type:sub-section
 
 載入練習用資料
 ====================================
+number of TB pos/neg cases
 ```{R}
 library(metafor)
 # BCG meta-analytic dataset
@@ -166,30 +311,68 @@ data(dat.bcg)
 knitr::kable(dat.bcg) 
 ```
 
+其他範例資料
+====================================
+mean difference
+```{R}
+knitr::kable(dat.ishak2007) 
+```
+
+其他範例資料
+====================================
+- number of participants
+- numeric	mean number of days off work/school
+```{R}
+knitr::kable(dat.gibson2002) 
+```
+
 Summary effect
 ====================================
 - Fixed effect model
   - Common true value
-
+  - 假設大家都一樣但是有觀察誤差
 - Random effects model
   - Normal distribution
+  - 假設每個人都不一樣，也同時存在觀察性誤差
+  - 研究異質性大時要用這個模式
 
+Fixed effect model
+====================================
+```{r echo=FALSE}
+knitr::include_graphics("fem.png")
+```
+
+Random effects model
+====================================
+```{r echo=FALSE}
+knitr::include_graphics("rem.png")
+```
 
 Summary effect
 ====================================
-`rma(yi, vi, method,...) `
-- yi effect size
-- vi variances
-- method type of model approach
+Random/mixed-effects models: `rma() `
 
 ```{R}
-library(metafor)
 result.ormr <- 
   rma(ai = tpos, bi = tneg, 
       ci = cpos, di = cneg, 
       data = dat.bcg, 
-      measure = "OR", method = "DL")
+      measure = "OR")
 ```
+`?escalc`
+
+rma() : method
+====================================
+Estimators for the amount of heterogeneity:
+  - "DL" = DerSimonian-Laird estimator
+  - "HE" = Hedges estimator
+  - "HS" = Hunter-Schmidt estimator
+  - "SJ" = Sidik-Jonkman estimator
+  - "ML" = maximum-likelihood estimator
+  - **"REML"** = restricted maximum-likelihood estimator
+  - "EB" = empirical Bayes estimator
+  - "PM" = Paule-Mandel estimator
+  - "GENQ" = generalized Q-statistic estimator
 
 Summary effect
 ====================================
@@ -199,21 +382,17 @@ summary(result.ormr)
 
 Assess Heterogeneity
 ====================================
-接著是評估「個別論文的效果」和「綜合性效果」是否有極大的差異性。異質性越高，資料的整合越難，可能會影響到分析的結論。（通常 p 值 < 0.1 ，就可以判定這些論文間存在有明顯的異質性）
-0% to 30% Low
-→ ·
-30% to 60% Moderate
-→ ·
-50% to 90%
-→ Substantial · 75% to 100% → Considerable
-τ2 ·
-Higgins'
-I2
-· H2 H
-Index
-,
-·
+- 評估「個別論文的效果」和「綜合性效果」是否有差異性
+- 異質性越高，資料的整合越難，可能會影響到分析的結論
+- Higgins'I2
+  - 0% to 30% Low
+  - 30% to 60% Moderate
+  - 50% to 90% Substantial
+  - 75% to 100% Considerable
+
+
 Intra-class correlation (ICC)
+====================================
 ```{R}
 result.ormr$I2
 result.ormr$H2
@@ -228,11 +407,10 @@ forest(result.ormr) # DEFAULT PLOT
 
 The Forest Plot
 ====================================
-- order: Sort by "obs", "fit", "prec", etc.
-- slab: Change study labels
-- ilab: Add study information
-- transf: Apply function to effects
-- psize: Symbol sizes
+- `order`: Sort by "obs", "fit", "prec", etc.
+- `slab`: Change study labels
+- `ilab`: Add study information
+- `psize`: Symbol sizes
 ```{R}
 study.names <- 
   letters[1:result.ormr$k] 
@@ -240,9 +418,6 @@ study.year <-
   2000 + sample(0:9, 
                 result.ormr$k,
                 replace = T)
-forest(result.ormr, order = "obs", 
-       slab = study.names, ilab = study.year, 
-       ilab.xpos = -4)
 ```
 
 The Forest Plot
@@ -258,17 +433,44 @@ forest(result.ormr,
 
 Subgroup analysis
 ====================================
-檢驗綜合效果（例如：介入成效）是否因為某些變項不同而有所差異，例如：男性的介入效果是否優於女性的效果。
+檢驗綜合效果（例如：介入成效）是否因為某些變項不同而有所差異
 
-```
+```{R}
 ### fit random-effects model in the three subgroups
-res.s <- rma(ai=tpos, bi=tneg, ci=cpos, di=cneg, data=dat.bcg, measure="RR",
-             subset=(alloc=="systematic"), method="REML")
-res.r <- rma(ai=tpos, bi=tneg, ci=cpos, di=cneg, data=dat.bcg, measure="RR",
-             subset=(alloc=="random"), method="REML")
-res.a <- rma(ai=tpos, bi=tneg, ci=cpos, di=cneg, data=dat.bcg, measure="RR",
-             subset=(alloc=="alternate"), method="REML")
+res.s <- rma(ai=tpos, bi=tneg, 
+             ci=cpos, di=cneg, 
+             data=dat.bcg, measure="OR",
+             subset=(alloc=="systematic"))
+res.r <- rma(ai=tpos, bi=tneg, 
+             ci=cpos, di=cneg, 
+             data=dat.bcg, measure="OR",
+             subset=(alloc=="random"))
+res.a <- rma(ai=tpos, bi=tneg, 
+             ci=cpos, di=cneg, 
+             data=dat.bcg, measure="OR",
+             subset=(alloc=="alternate"))
 ```
+
+Subgroup analysis
+====================================
+```{R}
+forest(res.s)
+```
+
+
+Subgroup analysis
+====================================
+```{R}
+forest(res.r)
+```
+
+
+Subgroup analysis
+====================================
+```{R}
+forest(res.a)
+```
+
 Sensitivity analysis
 ====================================
 - 將某篇論文刪除後，看看剩餘論文的合併效果是否會不同，測試整體的穩定度
@@ -277,17 +479,15 @@ Sensitivity analysis
 cases <- leave1out(result.ormr) 
 knitr::kable(cases)
 ```
-Sensitivity analysis
-====================================
-```{R}
-which(cases$I2 == min(cases$I2)) 
-```
+
 
 出版偏差評估
 ====================================
 type:sub-section
 
 - Funnel plot
+- Egger test 
+- [參考閱讀 Meta-analyses: how to read a funnel plot](https://fhs.mcmaster.ca/anesthesiaresearch/documents/Sedgwick2013Meta-analyses-howtoreadafunnelplot.pdf)
 
 Funnel plot
 ====================================
@@ -296,13 +496,38 @@ Funnel plot
   - 某些應該存在的研究結果不容易被發現
 -X軸代表風險差，Y軸代表標準差，黑點代表每一份研究，越上面的研究表示標準差越小（樣本數越大）。
 - 漏斗圖如果呈現對稱，表示沒有出版偏差；若呈現不對稱，表示有出版偏差的情形，這部分要注意。
+
+Funnel plot
+====================================
 ```{R}
 funnel(result.ormr)
+```
+
+
+Egger test 
+====================================
+P通常要0.10以下
+```{R}
+regtest(result.ormr)
+```
+
+Trim and Fill Analysis
+====================================
+To estimate the number of studies missing from a meta-analysis due to the suppression of the most extreme results on one side of the funnel plot.
+```{R}
+# Only applicable for FE or RE objects
+trimfill(result.ormr) 
 ```
 
 Funnel plot
 ====================================
 ```{R}
-trimfill(result.ormr) # Only applicable for FE or RE objects
 funnel(trimfill(result.ormr))
 ```
+
+總結
+====================================
+- 題目才是最重要的
+- 搜尋與整理文獻第二重要
+- 分析輔助
+
