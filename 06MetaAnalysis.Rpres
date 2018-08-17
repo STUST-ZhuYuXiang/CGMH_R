@@ -36,7 +36,8 @@ knitr::include_graphics("Review.png")
 ```
 
 
-
+什麼是Review？系統性回顧？
+====================================
 文獻回顧的方式分成兩種：
 - 敘述性綜論
 - 系統性文獻回顧
@@ -74,7 +75,7 @@ result.ormr <-
   rma(ai = tpos, bi = tneg, 
       ci = cpos, di = cneg, 
       data = dat.bcg, 
-      measure = "OR", method = "DL")
+      measure = "OR")
 forest(result.ormr) # DEFAULT PLOT
 ```
 
@@ -380,6 +381,13 @@ Summary effect
 summary(result.ormr)
 ```
 
+Summary effect
+========================================================
+type:alert
+
+- 使用dat.ishak2007
+- 建立Random effects model
+
 Assess Heterogeneity
 ====================================
 - 評估「個別論文的效果」和「綜合性效果」是否有差異性
@@ -431,6 +439,14 @@ forest(result.ormr,
        ilab.xpos = -4)
 ```
 
+The Forest Plot
+========================================================
+type:alert
+
+- 使用 dat.ishak2007
+- 建立 Random effects model
+- 畫 Forest Plot
+
 Subgroup analysis
 ====================================
 檢驗綜合效果（例如：介入成效）是否因為某些變項不同而有所差異
@@ -470,6 +486,16 @@ Subgroup analysis
 ```{R}
 forest(res.a)
 ```
+
+
+
+Subgroup analysis
+====================================
+type:alert
+
+- 使用dat.gibson2002
+- 用type做子分群
+
 
 Sensitivity analysis
 ====================================

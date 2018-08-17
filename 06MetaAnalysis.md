@@ -34,7 +34,8 @@ type:sub-section
 ![plot of chunk unnamed-chunk-1](Review.png)
 
 
-
+什麼是Review？系統性回顧？
+====================================
 文獻回顧的方式分成兩種：
 - 敘述性綜論
 - 系統性文獻回顧
@@ -536,6 +537,13 @@ estimate      se     zval    pval    ci.lb    ci.ub
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 ```
 
+Summary effect
+========================================================
+type:alert
+
+- 使用dat.ishak2007
+- 建立Random effects model
+
 Assess Heterogeneity
 ====================================
 - 評估「個別論文的效果」和「綜合性效果」是否有差異性
@@ -618,6 +626,14 @@ forest(result.ormr,
 
 ![plot of chunk unnamed-chunk-27](06MetaAnalysis-figure/unnamed-chunk-27-1.png)
 
+The Forest Plot
+========================================================
+type:alert
+
+- 使用 dat.ishak2007
+- 建立 Random effects model
+- 畫 Forest Plot
+
 Subgroup analysis
 ====================================
 檢驗綜合效果（例如：介入成效）是否因為某些變項不同而有所差異
@@ -667,6 +683,16 @@ forest(res.a)
 ```
 
 ![plot of chunk unnamed-chunk-31](06MetaAnalysis-figure/unnamed-chunk-31-1.png)
+
+
+
+Subgroup analysis
+====================================
+type:alert
+
+- 使用dat.gibson2002
+- 用type做子分群
+
 
 Sensitivity analysis
 ====================================
