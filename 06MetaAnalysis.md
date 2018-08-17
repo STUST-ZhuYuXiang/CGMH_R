@@ -808,6 +808,15 @@ funnel(trimfill(result.ormr))
 
 ![plot of chunk unnamed-chunk-36](06MetaAnalysis-figure/unnamed-chunk-36-1.png)
 
+Funnel plot
+========================================================
+type:alert
+
+- 使用 dat.ishak2007
+- 建立 Random effects model
+- 畫 Funnel plot 檢視出版偏差
+- 做 Egger test 檢定出版偏差
+
 總結
 ====================================
 - 題目才是最重要的
