@@ -899,6 +899,16 @@ plot(cma0,
 
 ![plot of chunk unnamed-chunk-29](04MedicalDataProcess-figure/unnamed-chunk-29-1.png)
 
+醫學資料處理: 藥物資料視覺化
+========================================================
+
+```r
+plot(cma0, 
+     align.all.patients=TRUE); 
+```
+
+![plot of chunk unnamed-chunk-30](04MedicalDataProcess-figure/unnamed-chunk-30-1.png)
+
 醫學資料處理: 藥物遵從性計算
 ========================================================
 CMA1~8
@@ -932,7 +942,7 @@ plot(cma1,
      legend.x=520); 
 ```
 
-![plot of chunk unnamed-chunk-31](04MedicalDataProcess-figure/unnamed-chunk-31-1.png)
+![plot of chunk unnamed-chunk-32](04MedicalDataProcess-figure/unnamed-chunk-32-1.png)
 
 
 醫學資料處理: 多重測量資料整合
